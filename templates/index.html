@@ -5,279 +5,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Mazer Admin Dashboard</title>
-    
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/css/bootstrap.css')}}">
-    
+
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/iconly/bold.css')}}">
 
-    <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/perfect-scrollbar/perfect-scrollbar.css')}}">
+    <link rel="stylesheet"
+        href="{{url_for('static', filename ='assets/vendors/perfect-scrollbar/perfect-scrollbar.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/bootstrap-icons/bootstrap-icons.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/css/app.css')}}">
-    <link rel="shortcut icon" href="{{url_for('static', filename ='assets/images/favicon.svg')}}" type="image/x-icon')}}">
+    <link rel="shortcut icon" href="{{url_for('static', filename ='assets/images/favicon.svg')}}"
+        type="image/x-icon')}}">
 </head>
 
 <body>
     <div id="app">
         <div id="sidebar" class="active">
             <div class="sidebar-wrapper active">
-    <div class="sidebar-header">
-        <div class="d-flex justify-content-between">
-            <div class="logo">
-                <a href="index.html"><img src="assets/images/logo/logo.png" alt="Logo" srcset=""></a>
+                <div class="sidebar-header">
+                    <div class="d-flex justify-content-between">
+                        <div class="logo">
+                            <a href="index.html"><img src="assets/images/logo/logo.png" alt="Logo" srcset=""></a>
+                        </div>
+                        <div class="toggler">
+                            <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="menu">
+                        <li class="sidebar-title">Menu</li>
+
+                        <li class="sidebar-item active ">
+                            <a href="index.html" class='sidebar-link'>
+                                <i class="bi bi-grid-fill"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li id="usuarios" class="sidebar-item active ">
+                            <a class='sidebar-link'>
+                                <i class="bi bi-people-fill"></i>
+                                <span>Users</span>
+                            </a>
+                        </li>
+
+
+
+                    </ul>
+                </div>
+                <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
             </div>
-            <div class="toggler">
-                <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
-            </div>
-        </div>
-    </div>
-    <div class="sidebar-menu">
-        <ul class="menu">
-            <li class="sidebar-title">Menu</li>
-            
-            <li class="sidebar-item active ">
-                <a href="index.html" class='sidebar-link'>
-                    <i class="bi bi-grid-fill"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-            
-            
-        </ul>
-    </div>
-    <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
-</div>
         </div>
         <div id="main">
-            <header class="mb-3">
-                <a href="#" class="burger-btn d-block d-xl-none">
-                    <i class="bi bi-justify fs-3"></i>
-                </a>
-            </header>
-            
-<div class="page-heading">
-    <h3>Mis inversiones</h3>
-</div>
-<div class="page-content">
-    <section class="row">
-        <div class="col-12 col-lg-9">
-            <div class="row">
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-3 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="stats-icon blue">
-                                        <i class="iconly-boldProfile"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <h6 class="text-muted font-semibold">Total invertido</h6>
-                                    <h6 class="font-extrabold mb-0">1000</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-3 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="stats-icon blue">
-                                        <i class="iconly-boldProfile"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <h6 class="text-muted font-semibold">Total Ganancias</h6>
-                                    <h6 class="font-extrabold mb-0">100</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-3 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="stats-icon green">
-                                        <i class="iconly-boldAdd-User"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <h6 class="text-muted font-semibold">Total Capital</h6>
-                                    <h6 class="font-extrabold mb-0">1100</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-3 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="stats-icon red">
-                                        <i class="iconly-boldBookmark"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <h6 class="text-muted font-semibold">Fecha de Envío</h6>
-                                    <h6 class="font-extrabold mb-0">01/09/2021</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-3">
-            <div class="card">
-                <div class="card-body py-4 px-5">
-                    <div class="d-flex align-items-center">
-                        <div class="avatar avatar-xl">
-                            <img src="assets/images/faces/1.jpg" alt="Face 1">
-                        </div>
-                        <div class="ms-3 name">
-                            <h5 class="font-bold">John Duck</h5>
-                            <h6 class="text-muted mb-0">@johnducky</h6>
-                        </div>
-                    </div>
-                </div>
-            </div>            
-        </div>
-
-        <div class="col-12 col-lg-3">
-            <div class="card">
-                <div class="card-body py-4 px-3">
-                    <div class="d-flex align-items-center">
-                        <div class="ms-3 name">
-                            <h5 class="font-bold">Retirar Ganancias</h5>
-                            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGanancia">Retirar $</a>  
-                        </div>
-                    </div>
-                </div>
-            </div>            
-        </div>
-        <div class="col-12 col-lg-3">
-            <div class="card">
-                <div class="card-body py-4 px-3">
-                    <div class="d-flex align-items-center">
-                        <div class="ms-3 name">
-                            <h5 class="font-bold">Retirar Capital y Ganancias </h5>
-                            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCapitalGanancia">Retirar $</a> 
-                        </div>
-                    </div>
-                </div>
-            </div>            
-        </div>
-
-        <div class="modal fade text-left" id="modalCapitalGanancia" tabindex="-1" aria-labelledby="myModalLabel33" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="myModalLabel33">Retirar Ganancias y Capital</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <i data-feather="x"></i>
-                        </button>
-                    </div>
-                    <form action="#">
-                        <div class="modal-body">                      
-                            <div class="form-group">
-                                <label for="basicInput">Monto a Retirar</label>
-                                <input type="text" class="form-control" id="basicInput">
-                            </div>   
-                            <div class="form-group">
-                                <label for="basicInput">Método de retiro</label>
-                                <select class="form-select" id="basicSelect">
-                                    <option>Binance</option>
-                                    <option>Airtm</option>
-                                    <option>Scrill</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="basicInput">Correo electrónico del Método a retirar</label>
-                                <input type="email" placeholder="" class="form-control">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                                <i class="bx bx-x d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Close</span>
-                            </button>
-                            <button type="button" class="btn btn-primary ml-1" data-bs-dismiss="modal">
-                                <i class="bx bx-check d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">login</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade text-left" id="modalGanancia" tabindex="-1" aria-labelledby="myModalLabel33" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="myModalLabel33">Retirar Ganancias</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <i data-feather="x"></i>
-                        </button>
-                    </div>
-                    <form action="#">
-                        <div class="modal-body">                      
-                            <div class="form-group">
-                                <label for="basicInput">Monto a Retirar</label>
-                                <input type="text" class="form-control" id="basicInput">
-                            </div>   
-                            <div class="form-group">
-                                <label for="basicInput">Método de retiro</label>
-                                <select class="form-select" id="basicSelect">
-                                    <option>Binance</option>
-                                    <option>Airtm</option>
-                                    <option>Scrill</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="basicInput">Correo electrónico del Método a retirar</label>
-                                <input type="email" placeholder="" class="form-control">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                                <i class="bx bx-x d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Close</span>
-                            </button>
-                            <button type="button" class="btn btn-primary ml-1" data-bs-dismiss="modal">
-                                <i class="bx bx-check d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">login</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+            <div id="contenido"></div>
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
                         <p>2021 &copy; Mazer</p>
                     </div>
                     <div class="float-end">
-                        <p>Crafted with <span class="text-danger"></span> by <a
-                                href="http://ahmadsaugi.com">A. Saugi</a></p>
+                        <p>Crafted with <span class="text-danger"></span> by <a href="http://ahmadsaugi.com">A.
+                                Saugi</a></p>
                     </div>
                 </div>
             </footer>
+            
         </div>
-    </div>
-<script src="{{url_for('static', filename ='assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
-<script src="{{url_for('static', filename ='assets/js/bootstrap.bundle.min.js')}}"></script>
-    
-<script src="{{url_for('static', filename ='assets/vendors/apexcharts/apexcharts.js')}}"></script>
-<script src="{{url_for('static', filename ='assets/js/pages/dashboard.js')}}"></script>
+       
 
-<script src="{{url_for('static', filename ='assets/js/main.js')}}"></script>
+       
+        
+        <script src="{{url_for('static', filename ='assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
+        <script src="{{url_for('static', filename ='assets/js/bootstrap.bundle.min.js')}}"></script>
+        <script src="{{url_for('static', filename ='js/linkHome.js')}}"></script>
+
+        <!--<script src="{{url_for('static', filename ='assets/vendors/apexcharts/apexcharts.js')}}"></script>-->
+        <script src="{{url_for('static', filename ='assets/js/pages/dashboard.js')}}"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+        <!-- jQuery -->
 </body>
 
 </html>

@@ -60,9 +60,23 @@ def clearSession():
     session.clear()
 
 @app.route('/')
-def login():
+def home():
     try:
         return render_template('index.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/indicadores')
+def indicadores():
+    try:
+        return render_template('indicadores.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/usuarios')
+def usuarios():
+    try:
+        return render_template('indicadores.html')
     except Exception as error:
         logger.exception(error)
 
