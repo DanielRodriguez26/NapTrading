@@ -14,7 +14,7 @@ import modules.customhash as customhash
 
 
 #url
-import modules.login as login
+import modules.login as loginModule
 
 
 app = Flask(__name__)
@@ -30,7 +30,7 @@ def initial(self):
     global app, mydb, logger
     try:
         #Configuración logger de errores
-        logger = logging.getLogger('naptrading')
+        logger = logging.getLogger('')
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s: %(message)s')
         handler = logging.FileHandler('naptrading_error.log')
         handler.setLevel(logging.ERROR)
@@ -60,9 +60,25 @@ def clearSession():
     session.clear()
 
 @app.route('/')
-def login():
+def home():
     try:
-        login.loginModule()
+        return render_template('index.html')
+
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/indicadores')
+def indicadores():
+    try:
+        return render_template('indicadores.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/usuarios')
+def usuarios():
+    try:
+        return render_template('indicadores.html')
+
     except Exception as error:
         logger.exception(error)
 
