@@ -63,6 +63,7 @@ def clearSession():
 def home():
     try:
         return render_template('index.html')
+
     except Exception as error:
         logger.exception(error)
 
@@ -77,6 +78,7 @@ def indicadores():
 def usuarios():
     try:
         return render_template('indicadores.html')
+
     except Exception as error:
         logger.exception(error)
 
