@@ -1,11 +1,11 @@
-import mysql.connector
+from flask_mysqldb import  MySQLdb
 import datetime
 import modules.customhash as customhash
 import modules.globalvariables as gb
 from flask import request,render_template,url_for, session
 
 globalvariables = gb.GlobalVariables(True)
-mydb= mysql.connector.connect(
+mydb= MySQLdb.connect(
     host=globalvariables.MyslqlHost,
     user=globalvariables.MysqlUser,
     password=globalvariables.MysqlPassword,
