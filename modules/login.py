@@ -3,4 +3,4 @@ from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
 
 def loginModule():
-    return render_template('login.html')
+    return render_template('index.html')
