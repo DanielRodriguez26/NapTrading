@@ -14,7 +14,7 @@ import modules.customhash as customhash
 
 
 #url
-import modules.login as loginModule
+from modules.inversor.indicadores import indicadores
 
 
 app = Flask(__name__)
@@ -26,7 +26,7 @@ globalvariables = None
 UPLOAD_FOLDER = None
 
 
-def initial(self):
+def Initial():
     global app, mydb, logger
     try:
         #Configuración logger de errores
@@ -42,7 +42,7 @@ def initial(self):
             host=globalvariables.MysqlHost,
             user=globalvariables.MysqlUser,
             password=globalvariables.MysqlPassword,
-            database=globalvariables.MysqlDatabase)  
+            database=globalvariables.MysqlDataBase)  
 
 
         app.secret_key = "RGlCYW5rYTEuMCB3YXMgbWFkZSBmb3IgQ0FTVVIsIGFuZCB3cml0dGVuIGJ5IE1pZ3VlIGFuZCBEYW5pZWwuIEF0IHRoZSBlbmQgb2YgdGhlIHByb2plY3QsIEp1YW4sIEVkd2luLCBIdWdvIGFuZCBBbmRyw6lzIGpvaW5lZCB0aGUgdGVhbS4gTm93IHdlIGFyZSBhIGZpcmVmaWdodGVycyB0ZWFtLg=="
@@ -55,9 +55,14 @@ def initial(self):
     except Exception as error:
         logger.exception(error)
 
+
+Initial()
+
+
 def clearSession():
         # Para mas seguridad, al cargar la landingpage siempre se limpian todas las cookies
     session.clear()
+
 
 @app.route('/')
 def home():
@@ -67,18 +72,20 @@ def home():
     except Exception as error:
         logger.exception(error)
 
+
 @app.route('/indicadores')
-def indicadores():
+def indicadoresUrl():
     try:
-        return render_template('indicadores.html')
+        url= indicadores()
+        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
+
 
 @app.route('/usuarios')
 def usuarios():
     try:
         return render_template('indicadores.html')
-
     except Exception as error:
         logger.exception(error)
 
