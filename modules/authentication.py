@@ -6,7 +6,7 @@ from flask import request,render_template,url_for, session
 
 globalvariables = gb.GlobalVariables(True)
 mydb= MySQLdb.connect(
-    host=globalvariables.MyslqlHost,
+    host=globalvariables.MysqlHost,
     user=globalvariables.MysqlUser,
     password=globalvariables.MysqlPassword,
     database=globalvariables.MysqlDataBase)  
