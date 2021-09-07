@@ -9,19 +9,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/css/bootstrap.css')}}">
-
-
-    <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/iconly/bold.css')}}">
-
-    <link rel="stylesheet"
-        href="{{url_for('static', filename ='assets/vendors/perfect-scrollbar/perfect-scrollbar.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/iconly/bold.css')}}"> 
+    <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/perfect-scrollbar/perfect-scrollbar.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/bootstrap-icons/bootstrap-icons.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/css/app.css')}}">
-    <link rel="shortcut icon" href="{{url_for('static', filename ='assets/images/favicon.svg')}}"
-        type="image/x-icon')}}">
+    <link rel="shortcut icon" href="{{url_for('static', filename ='assets/images/favicon.svg')}}" type="image/x-icon')}}">
 
 </head>
-
 <body>
     <div id="app">
         <div id="sidebar" class="active">
@@ -43,13 +37,13 @@
                         <li class="sidebar-item active ">
                             <a href="index.html" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
-                                <span>Dashboard</span>
+                                <span>Home</span>
                             </a>
                         </li>
-                        <li id="usuarios" class="sidebar-item active ">
-                            <a class='sidebar-link'>
+                        <li id="historicos" class="sidebar-item active ">
+                            <a href="#" class='sidebar-link'>
                                 <i class="bi bi-people-fill"></i>
-                                <span>Users</span>
+                                <span>Historicos</span>
                             </a>
                         </li>
                     </ul>
@@ -58,6 +52,11 @@
             </div>
         </div>
         <div id="main">
+            <header class="mb-3">
+                <a href="#" class="burger-btn d-block d-xl-none">
+                    <i class="bi bi-justify fs-3"></i>
+                </a>
+            </header>
             <div id="contenido"></div>
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
@@ -71,16 +70,18 @@
                 </div>
             </footer>
             
-        </div>   
+        </div> 
+        <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/simple-datatables/style.css')}}">
+        <script src="{{url_for('static', filename ='assets/vendors/simple-datatables/simple-datatables.js')}}"></script>
+        <script src="{{url_for('static', filename ='assets/js/main.js')}}"></script>  
         <script src="{{url_for('static', filename ='assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
         <script src="{{url_for('static', filename ='assets/js/bootstrap.bundle.min.js')}}"></script>
         <script src="{{url_for('static', filename ='js/linkHome.js')}}"></script>
-
-        <!--<script src="{{url_for('static', filename ='assets/vendors/apexcharts/apexcharts.js')}}"></script>-->
+        <script src="{{url_for('static', filename ='assets/vendors/apexcharts/apexcharts.js')}}"></script>
         <script src="{{url_for('static', filename ='assets/js/pages/dashboard.js')}}"></script>
-
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        
 
         <!-- jQuery -->
 
