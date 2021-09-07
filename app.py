@@ -82,10 +82,17 @@ def indicadoresUrl():
         logger.exception(error)
 
 
-@app.route('/usuarios')
-def usuarios():
+@app.route('/inversores')
+def inversores():
     try:
         return render_template('indicadores.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/historicos')
+def historicos():
+    try:
+        return render_template('historicos.html')
     except Exception as error:
         logger.exception(error)
 

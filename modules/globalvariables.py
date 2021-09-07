@@ -7,6 +7,8 @@ class GlobalVariables(object):
         self.MysqlHost = "localhost"
         self.MysqlUser = "dibankaops"
         self.MysqlPassword = "37f75cac-bcbd-11ea-a5ee-00090ffe0001"
+        self.MysqlUser = "root"
+        self.MysqlPassword = "123"
         self.MysqlDataBase = "inversoresnaptrading"
         
         self.__msql= MySQLdb.connect(
