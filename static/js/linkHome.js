@@ -9,9 +9,8 @@ function registarEventos() {
 
 
 function cargarLinks() {
-    $('#usuarios').click( function () {
-        alert('Hola')
-        $('#contenido').load('usuarios');
+    $('#historicos').click( function () {
+        $('#contenido').load('historicos');
     });
 }
 
