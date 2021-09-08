@@ -1,13 +1,12 @@
-window.onload = function() {
+window.onload = function () {
     registarEventos()
 }
 
 function registarEventos() {
-    $('#submit').click(()=>{
+    $('#submit').click(() => {
         var data = new FormData();
-        data.append('usuario' , $("#usuario").val());
-        data.append('contrasena' , $("#contrasena").val());
-    
+        data.append('usuario', $("#usuario").val());
+        data.append('contrasena', $("#contrasena").val());
         $.ajax({
             url: '/loginVerify',
             data: data,
@@ -15,8 +14,12 @@ function registarEventos() {
             contentType: false,
             processData: false,
             type: 'POST',
-            success: function (responseJson, status, statusCode) { cargarLoginVerifySuccess(responseJson, statusCode.status); },
-            error: function (jqXHR, textStatus, errorThrown) { errorConsultandoAPI(jqXHR, textStatus, errorThrown); }
+            success: function (responseJson, status, statusCode) {
+                cargarLoginVerifySuccess(responseJson, statusCode.status);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                errorConsultandoAPI(jqXHR, textStatus, errorThrown);
+            }
         });
     })
 }
@@ -36,7 +39,7 @@ function cargarLoginVerifySuccess(responseJson) {
         }).then((result) => {
             window.location.href = data.url
         })
-    }else{
+    } else {
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -44,5 +47,4 @@ function cargarLoginVerifySuccess(responseJson) {
         })
     }
 
-    
 }
