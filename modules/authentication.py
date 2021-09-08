@@ -1,8 +1,10 @@
+from flask import request,render_template,url_for, session
 from flask_mysqldb import  MySQLdb
 import datetime
 import modules.customhash as customhash
 import modules.globalvariables as gb
-from flask import request,render_template,url_for, session
+import collections
+
 
 globalvariables = gb.GlobalVariables(True)
 mydb= MySQLdb.connect(
@@ -25,3 +27,27 @@ class authenticateResponse:
     isValid = True
     # Determina si el usuario está siendo usado en otro dispositivo
     secondDevic = 0
+
+def authenticate(id, contra):
+    cur = mydb.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute(" SELECT * FROM usuarios WHERE username=%s", (id,))
+    user = cur.fetchone()
+    cur.close()
+   
+    response= collections.OrderedDict()
+    
+    if user != None:
+        hashedPass = customhash.hash(contra)
+        contrasena =user["contrasenia"]
+        if contrasena == hashedPass:            
+            session["usuario"] = id
+            response['url']='/home'
+            
+            return response
+        else:
+            response['url']='/'
+            response['redirect']=True
+            return response
+    else:
+            response['url']='/'
+            return response
