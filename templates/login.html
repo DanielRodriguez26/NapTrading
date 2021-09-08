@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mazer Admin Dashboard</title>
+    <title>Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/css/bootstrap.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/bootstrap-icons/bootstrap-icons.css')}}">
@@ -14,41 +14,40 @@
 
 <body>
     <div id="auth">
-        
-<div class="row h-100">
-    <div class="col-lg-5 col-12">
-        <div id="auth-left">
-            <div class="auth-logo">
-                <a href="index.html"><img src="{{url_for('static', filename ='assets/images/logo/logo.png')}}" alt="Logo"></a>
+        <div class="row h-100">
+            <div class="col-lg-5 col-12">
+                <div id="auth-left">
+                    <div class="auth-logo">
+                        <a href="index.html"><img src="{{url_for('static', filename ='assets/images/logo/logo.png')}}"
+                                alt="Logo"></a>
+                    </div>
+                    <h1 class="auth-title">Inicio de sesión.</h1>
+                    <p class="auth-subtitle mb-5">Inicia sesión con tus credenciales entregadas</p>
+                    <div class="form-group position-relative has-icon-left mb-4">
+                        <input type="text" class="form-control form-control-xl" id="usuario" placeholder="Usuario">
+                        <div class="form-control-icon">
+                            <i class="bi bi-person"></i>
+                        </div>
+                    </div>
+                    <div class="form-group position-relative has-icon-left mb-4">
+                        <input type="password" class="form-control form-control-xl" id="contrasena" placeholder="Contraseña">
+                        <div class="form-control-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5" id="submit">Log in</button>
+                </div>
             </div>
-            <h1 class="auth-title">Inicio de sesión.</h1>
-            <p class="auth-subtitle mb-5">Inicia sesión con tus credenciales entregadas</p>
-
-            <form action="index.html">
-                <div class="form-group position-relative has-icon-left mb-4">
-                    <input type="text" class="form-control form-control-xl" placeholder="Usuario">
-                    <div class="form-control-icon">
-                        <i class="bi bi-person"></i>
-                    </div>
+            <div class="col-lg-7 d-none d-lg-block">
+                <div id="auth-right">
                 </div>
-                <div class="form-group position-relative has-icon-left mb-4">
-                    <input type="password" class="form-control form-control-xl" placeholder="Contraseña">
-                    <div class="form-control-icon">
-                        <i class="bi bi-shield-lock"></i>
-                    </div>
-                </div>
-                <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
-            </form>
+            </div>
         </div>
-    </div>
-    <div class="col-lg-7 d-none d-lg-block">
-        <div id="auth-right">
-
-        </div>
-    </div>
-</div>
 
     </div>
+    <script src="{{url_for('static', filename ='js/login.js')}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
 </body>
-
 </html>
