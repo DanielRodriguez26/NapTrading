@@ -30,7 +30,7 @@ class authenticateResponse:
 
 def authenticate(id, contra):
     cur = mydb.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute(" SELECT * FROM usuarios WHERE username=%s", (id,))
+    cur.execute(" SELECT * FROM usuarios WHERE username = %s", (id,))
     user = cur.fetchone()
     cur.close()
    
@@ -38,16 +38,18 @@ def authenticate(id, contra):
     
     if user != None:
         hashedPass = customhash.hash(contra)
-        contrasena =user["contrasenia"]
-        if contrasena == hashedPass:            
+        contrasena = user["contrasenia"]
+        username = user["username"]
+        if contrasena == hashedPass and username == id:
             session["usuario"] = id
-            response['url']='/home'
-            
+            response['url'] = '/home'
+            response['redirect'] = True
             return response
         else:
-            response['url']='/'
-            response['redirect']=True
+            response['url'] = '/'
+            response['redirect'] = False
             return response
     else:
-            response['url']='/'
+            response['url'] = '/'
+            response['redirect'] = False
             return response

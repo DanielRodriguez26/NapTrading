@@ -43,8 +43,7 @@ def Initial():
             host=globalvariables.MysqlHost,
             user=globalvariables.MysqlUser,
             password=globalvariables.MysqlPassword,
-            database=globalvariables.MysqlDataBase)  
-
+            database=globalvariables.MysqlDataBase)
 
         app.secret_key = "TmFwVHJhZGluZyBlcyBjcmVhZGEgcG9yIERhbmllbCBIb3lvcyB5IERhbmllbCBSb2RyaWd1ZXouIHkgZnVlIGNyZWFkbyBwYXJhIGxvcyBpbnZlcnNvcmVzIHkgc3VzIGFkbWluaXN0cmFkb3Jlcy4g"
 

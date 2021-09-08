@@ -25,6 +25,24 @@ function registarEventos() {
 function cargarLoginVerifySuccess(responseJson) {
     debugger
     var data = responseJson.data
-    window.location.href =data.url
 
+    if (data.redirect) {
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Bienvenido',
+            showConfirmButton: false,
+            timer: 1500
+        }).then((result) => {
+            window.location.href = data.url
+        })
+    }else{
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Hay un error en la validacion!',
+        })
+    }
+
+    
 }

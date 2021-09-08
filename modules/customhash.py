@@ -6,7 +6,7 @@ def hash(phrase):
     if not phrase or phrase == "":
         return ""
 
-    # NapTrading es creada por Daniel Hoyos y Daniel Rodriguez. y fue creado para lo inversores y sus administradores. 
+    # NapTrading es creada por Daniel Hoyos y Daniel Rodriguez. y fue creado para los inversores y sus administradores. 
     salt = "TmFwVHJhZGluZyBlcyBjcmVhZGEgcG9yIERhbmllbCBIb3lvcyB5IERhbmllbCBSb2RyaWd1ZXouIHkgZnVlIGNyZWFkbyBwYXJhIGxvcyBpbnZlcnNvcmVzIHkgc3VzIGFkbWluaXN0cmFkb3Jlcy4g"
 
     encodedPhrase = str(phrase + salt).encode('utf-8')
