@@ -60,7 +60,7 @@ Initial()
 
 
 def clearSession():
-        # Para mas seguridad, al cargar la landingpage siempre se limpian todas las cookies
+    # Para mas seguridad, al cargar la landingpage siempre se limpian todas las cookies
     session.clear()
 
 
@@ -75,12 +75,11 @@ def login():
 @app.route('/loginVerify', methods=["GET", "POST"])
 def loginVerify():
     try:
-        id = request.form['usuario']
-        contra = request.form['contrasena']
-        render = loginVerifyModule(id,contra)
+        render = loginVerifyModule()
         return Response(json.dumps({ 'data' : render }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
+
 
 @app.route('/home')
 def home():
@@ -105,6 +104,7 @@ def inversores():
         return render_template('indicadores.html')
     except Exception as error:
         logger.exception(error)
+
 
 @app.route('/historicos')
 def historicos():

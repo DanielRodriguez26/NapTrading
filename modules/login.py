@@ -6,6 +6,8 @@ import modules.authentication as authentication
 def loginModule():
     return render_template('index.html')
 
-def loginVerifyModule(id, contra):
+def loginVerifyModule():
+    id = request.form['usuario']
+    contra = request.form['contrasena']
     authenticateResponse = authentication.authenticate(id, contra)
     return authenticateResponse
