@@ -97,11 +97,45 @@ def indicadoresUrl():
     except Exception as error:
         logger.exception(error)
 
-
-@app.route('/inversores')
-def inversores():
+@app.route('/solicitudes')
+def solicitudes():
     try:
-        return render_template('indicadores.html')
+        return render_template('solicitudes.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/auditoria')
+def auditoria():
+    try:
+        return render_template('auditoria.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/crearInversores')
+def crearInversores():
+    try:
+        return render_template('crearInversores.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/administrarInversores')
+def administrarInversores():
+    try:
+        return render_template('administrarInversores.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/crearAdministrativos')
+def crearAdministrativos():
+    try:
+        return render_template('crearAdministrativos.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/administrarAdministrativos')
+def administrarAdministrativos():
+    try:
+        return render_template('administrarAdministrativos.html')
     except Exception as error:
         logger.exception(error)
 
@@ -113,6 +147,7 @@ def historicos():
     except Exception as error:
         logger.exception(error)
 
+#crearInversores
 
 if __name__ == '__main__':
     app.run(port = 2000, debug = True)
