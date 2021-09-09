@@ -15,6 +15,7 @@ import modules.customhash as customhash
 
 #url
 from modules.inversor.indicadores import indicadores
+from modules.login import loginVerifyModule
 
 
 app = Flask(__name__)
@@ -42,10 +43,9 @@ def Initial():
             host=globalvariables.MysqlHost,
             user=globalvariables.MysqlUser,
             password=globalvariables.MysqlPassword,
-            database=globalvariables.MysqlDataBase)  
+            database=globalvariables.MysqlDataBase)
 
-
-        app.secret_key = "RGlCYW5rYTEuMCB3YXMgbWFkZSBmb3IgQ0FTVVIsIGFuZCB3cml0dGVuIGJ5IE1pZ3VlIGFuZCBEYW5pZWwuIEF0IHRoZSBlbmQgb2YgdGhlIHByb2plY3QsIEp1YW4sIEVkd2luLCBIdWdvIGFuZCBBbmRyw6lzIGpvaW5lZCB0aGUgdGVhbS4gTm93IHdlIGFyZSBhIGZpcmVmaWdodGVycyB0ZWFtLg=="
+        app.secret_key = "TmFwVHJhZGluZyBlcyBjcmVhZGEgcG9yIERhbmllbCBIb3lvcyB5IERhbmllbCBSb2RyaWd1ZXouIHkgZnVlIGNyZWFkbyBwYXJhIGxvcyBpbnZlcnNvcmVzIHkgc3VzIGFkbWluaXN0cmFkb3Jlcy4g"
 
         UPLOAD_FOLDER = os.path.abspath("./static/img/")
 
@@ -60,15 +60,31 @@ Initial()
 
 
 def clearSession():
-        # Para mas seguridad, al cargar la landingpage siempre se limpian todas las cookies
+    # Para mas seguridad, al cargar la landingpage siempre se limpian todas las cookies
     session.clear()
 
 
 @app.route('/')
+def login():
+    try:
+        return render_template('login.html')
+    except Exception as error:
+        logger.exception(error)
+
+
+@app.route('/loginVerify', methods=["GET", "POST"])
+def loginVerify():
+    try:
+        render = loginVerifyModule()
+        return Response(json.dumps({ 'data' : render }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
+
+@app.route('/home')
 def home():
     try:
         return render_template('index.html')
-
     except Exception as error:
         logger.exception(error)
 
@@ -76,7 +92,7 @@ def home():
 @app.route('/indicadores')
 def indicadoresUrl():
     try:
-        url= indicadores()
+        url = indicadores()
         return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
@@ -122,6 +138,7 @@ def administrarAdministrativos():
         return render_template('administrarAdministrativos.html')
     except Exception as error:
         logger.exception(error)
+
 
 @app.route('/historicos')
 def historicos():
