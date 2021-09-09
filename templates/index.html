@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/bootstrap-icons/bootstrap-icons.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/css/app.css')}}">
     <link rel="shortcut icon" href="{{url_for('static', filename ='assets/images/favicon.svg')}}" type="image/x-icon')}}">
-
 </head>
 <body>
     <div id="app">
@@ -23,7 +22,7 @@
                 <div class="sidebar-header">
                     <div class="d-flex justify-content-between">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/images/logo/logo.png" alt="Logo" srcset=""></a>
+                            <a href="#"><img src="assets/images/logo/logo.png" alt="Logo" srcset=""></a>
                         </div>
                         <div class="toggler">
                             <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
@@ -34,18 +33,57 @@
                     <ul class="menu">
                         <li class="sidebar-title">Menu</li>
 
-                        <li class="sidebar-item active ">
-                            <a href="index.html" class='sidebar-link'>
+                        <li id="homeInversor" class="sidebar-item ">
+                            <a href="#" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Home</span>
                             </a>
                         </li>
-                        <li id="historicos" class="sidebar-item active ">
+                        <li id="solicitudes" class="sidebar-item">
                             <a href="#" class='sidebar-link'>
-                                <i class="bi bi-people-fill"></i>
+                                <i class="bi bi-cash"></i>
+                                <span>Solicitudes</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item  has-sub">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>Inversores</span></a>
+                            <ul class="submenu ">
+                                <li class="submenu-item ">
+                                    <a href="#" id ="crearInversores">Crear Inversores</a>
+                                </li>
+                                <li class="submenu-item ">
+                                    <a href="#" id="administrarInversores">Administrar Inversores</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item  has-sub">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-pen-fill"></i>
+                                <span>Administradores</span></a>
+                            <ul class="submenu ">
+                                <li class="submenu-item ">
+                                    <a href="#" id ="crearAdministrativos">Crear Administradores</a>
+                                </li>
+                                <li class="submenu-item ">
+                                    <a href="#" id="administrarAdministrativos">Administrar Administradores</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="historicos" class="sidebar-item">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-file-earmark-medical-fill"></i>
                                 <span>Historicos</span>
                             </a>
                         </li>
+                        <li id="auditoria" class="sidebar-item">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-file-earmark-medical-fill"></i>
+                                <span>Auditoria</span>
+                            </a>
+                        </li>
+                        
                     </ul>
                 </div>
                 <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
