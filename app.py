@@ -16,6 +16,10 @@ import modules.customhash as customhash
 #url
 from modules.inversor.indicadores import indicadores
 from modules.login import loginVerifyModule
+from modules.administrador.administrador import crearAdministradorModule,editarAdministradorModule,udateAdministradorModule,eliminarAdministradorModule,administrarAdministrativosTablaModulo
+from modules.inversor.inversor import crearInversorModule,editarInversorModule,udateInversorModule,eliminarInversorModule,administrarInversorTablaModulo
+from modules.historicos import historicosTablaModulo,indicadoresHistoricosModulo
+
 
 
 app = Flask(__name__)
@@ -88,7 +92,7 @@ def home():
     except Exception as error:
         logger.exception(error)
 
-
+ #------------------indicadores------------
 @app.route('/indicadores')
 def indicadoresUrl():
     try:
@@ -97,6 +101,7 @@ def indicadoresUrl():
     except Exception as error:
         logger.exception(error)
 
+#------------------solicitudes-------------------------
 @app.route('/solicitudes')
 def solicitudes():
     try:
@@ -104,6 +109,7 @@ def solicitudes():
     except Exception as error:
         logger.exception(error)
 
+#----------------Auditoria-----------------------------
 @app.route('/auditoria')
 def auditoria():
     try:
@@ -111,12 +117,30 @@ def auditoria():
     except Exception as error:
         logger.exception(error)
 
+
+# -------------------Inversores------------------------
 @app.route('/crearInversores')
 def crearInversores():
     try:
         return render_template('crearInversores.html')
     except Exception as error:
         logger.exception(error)
+
+@app.route('/crearInversor')
+def crearInversor():
+    try:
+        return render_template('crearInversores.html')
+    except Exception as error:
+        logger.exception(error)
+
+
+@app.route('/editarInversores')
+def editarInversores():
+    try:
+        return render_template('crearInversores.html')
+    except Exception as error:
+        logger.exception(error)
+
 
 @app.route('/administrarInversores')
 def administrarInversores():
@@ -125,12 +149,49 @@ def administrarInversores():
     except Exception as error:
         logger.exception(error)
 
+# -------------------Administradores---------------------
 @app.route('/crearAdministrativos')
 def crearAdministrativos():
     try:
         return render_template('crearAdministrativos.html')
     except Exception as error:
         logger.exception(error)
+
+@app.route('/crearAdministrador', methods=["GET", "POST"])
+def crearAdministrador():
+    try:
+        objData = crearAdministradorModule()
+        return Response(json.dumps({ 'data' : objData }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
+
+@app.route('/editarAdministrador')
+def editarAdministrador():
+    try:
+        url = indicadores()
+        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
+
+@app.route('/udateAdministrador')
+def udateAdministrador():
+    try:
+        url = indicadores()
+        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
+
+@app.route('/eliminarAdministrador')
+def eliminarAdministrador():
+    try:
+        url = indicadores()
+        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
 
 @app.route('/administrarAdministrativos')
 def administrarAdministrativos():
@@ -140,10 +201,37 @@ def administrarAdministrativos():
         logger.exception(error)
 
 
+@app.route('/administrarAdministrativosTabla')
+def administrarAdministrativosTabla():
+    try:
+        url = indicadores()
+        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
+
+
+#region  -------------------------Historicos--------------------
 @app.route('/historicos')
 def historicos():
     try:
         return render_template('historicos.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/historicosTabla')
+def historicosTabla():
+    try:
+        dataColl = indicadores()
+        Response(json.dumps({ 'data':dataColl}), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/indicadoresHistoricos')
+def indicadoresHistoricos():
+    try:
+        dataColl = indicadores()
+        Response(json.dumps({ 'data':dataColl}), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
 

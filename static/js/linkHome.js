@@ -1,6 +1,7 @@
-window.onload = function() {
+$(document).ready(()=>{
     registarEventos()
-}
+})
+
 function registarEventos() {
     cargarIndicadores()
     cargarLinksSolicitudes()
