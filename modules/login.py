@@ -7,7 +7,8 @@ def loginModule():
     return render_template('index.html')
 
 def loginVerifyModule():
-    id = request.form['usuario']
-    contra = request.form['contrasena']
-    authenticateResponse = authentication.authenticate(id, contra)
-    return authenticateResponse
+    if request.method == "POST":
+        id = request.form['usuario']
+        contra = request.form['contrasena']
+        authenticateResponse = authentication.authenticate(id, contra)
+        return authenticateResponse
