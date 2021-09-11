@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, g, make_response, session, escape, Response,json
 import MySQLdb
 from werkzeug.utils import secure_filename
+import modules.customhash as customhash
 import modules.authentication as authentication
 import modules.globalvariables as gb
+import uuid
+import collections
+
 globalvariables = gb.GlobalVariables(True)
 mydb= MySQLdb.connect(
     host=globalvariables.MysqlHost,
@@ -19,24 +23,95 @@ def crearInversorModule():
         identificacion = request.form['identificacion']
         email = request.form['email']
         telefono = request.form['telefono']
+        pais = request.form['pais']
+        capital = request.form['capital']
+
         cur = mydb.cursor()
+        objData= collections.OrderedDict()
+
+        cur.execute('''SELECT identificacion, pais FROM inversores''')
+        dataIn = cur.fetchall()
+        for row in dataIn:
+            if identificacion == str(row[0] and pais == row[1]):
+                objData['redirect']= False
+                objData['mensaje']= 'El numero de identificacion ya existe'
+
+                return objData
+
+
+        username = nombre[0:1] + apellidos + identificacion[-3:]
+        username = username.lower()
+        cur.execute('''SELECT username FROM usuarios''')
+        data = cur.fetchall()
+        for row in data:            
+            if username == row[0]:
+                username = nombre[0:1] + apellidos + identificacion[-4:]
+                username = username.lower()
+
+        
+        contra = str(uuid.uuid1())
+        contra = contra[0:5]
+        contrase = customhash.hash(contra)
+        
+        cur.execute('''INSERT INTO usuarios ( username, contrasenia, rol) VALUES (%s,%s,2);''',
+                    (username,contrase))
+        usuario_id = cur.lastrowid
+
+        cur.execute('''INSERT INTO inversores (usuario_id, identificacion, nombres, apellidos,telefono,email,pais) VALUES (%s,%s,%s,%s,%s,%s,%s);
+                    ''',(usuario_id,identificacion, nombre,apellidos,telefono ,email,pais))
+
+        mydb.commit()
+        cur.close()
+        
+        objData['contra']= contra
+        objData['url']= '/home'
+        objData['redirect']= True
+        objData['username']= username
+
+        return objData
 
 
 def editarInversorModule():
     if request.method == "POST":
-        pass
+        username = request.form['username']
+        contra = str(uuid.uuid1())
+        contra = contra[0:5]
+        contrase = customhash.hash(contra)
 
+        cur = mydb.cursor()
+        objData= collections.OrderedDict()
+        cur.execute(''' UPDATE usuarios 
+                        SET contrasenia = %s 
+                        WHERE usuario_id = %s;''',
+                    (contrase,username))
+        mydb.commit()
+        cur.close()
 
-def udateInversorModule():
-    if request.method == "POST":
-        pass
+        objData['contra']= contra
+        objData['url']= '/home'
+        objData['redirect']= True
+        objData['username']= username
 
-
-def eliminarInversorModule():
-    if request.method == "POST":
-        pass
+        return objData
 
 
 def administrarInversorTablaModulo():
     if request.method == "POST":
-        pass
+        desde= int(request.values.get('start'))
+        cur = mydb.cursor()
+
+        cur.execute('''SELECT * FROM inversores''')
+        data = cur.fetchall()
+        dataColl = []
+        if data:
+            
+            for row in data:
+                objData= collections.OrderedDict()
+                objData['usuario_id']= row[1]
+                objData['nombre']= row[3] +' '+row[4]
+                objData['identificacion']= row[2]
+                objData['email']= row[6]
+                objData['telefono']  = row[5]
+                objData['pais']  = row[7]
+                dataColl.append(objData)
+        return dataColl

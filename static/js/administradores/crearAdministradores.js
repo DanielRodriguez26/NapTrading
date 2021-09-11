@@ -4,6 +4,7 @@ $(document).ready(()=>{
 
 function registarEventos() {
     creaAdministrador()
+    limpiar()
 }
 
 function creaAdministrador() {
@@ -14,6 +15,7 @@ function creaAdministrador() {
         data.append('identificacion' , $("#identificacion").val());
         data.append('telefono' , $("#telefono").val());
         data.append('email' , $("#email").val());
+        data.append('pais' , $("#pais").val());
 
         $.ajax({
             data:data,
@@ -32,13 +34,12 @@ function creaAdministrador() {
     });
 }
 
-
 function creaAdministradorSuccess(responseJson) {
-    debugger
+    
     var data = responseJson.data
     username = data.username
     contra = data.contra
-
+    mensaje = data.mensaje
     if (data.redirect) {
         Swal.fire({
             icon: 'success',
@@ -50,9 +51,21 @@ function creaAdministradorSuccess(responseJson) {
     } else {
         Swal.fire({
             icon: 'error',
-            title: 'Oops...',
-            text: 'Hay un error en la validacion!',
+            title: mensaje,
+            
         })
     }
 
+}
+
+function limpiar(){
+    $('#btnLimpiar').click( function () {
+        $("#nombre").val('')
+        $("#apellidos").val('')
+        $("#identificacion").val('')
+        $("#telefono").val('')
+        $("#email").val('')
+        $("#pais").val('')
+    })
+    
 }

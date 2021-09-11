@@ -23,8 +23,20 @@ def crearAdministradorModule():
         identificacion = request.form['identificacion']
         email = request.form['email']
         telefono = request.form['telefono']
+        pais = request.form['pais']
 
         cur = mydb.cursor()
+        objData= collections.OrderedDict()
+
+        cur.execute('''SELECT identificacion, pais FROM administrativos''')
+        dataIn = cur.fetchall()
+        for row in dataIn:
+            if identificacion == str(row[0] and pais == row[1]):
+                objData['redirect']= False
+                objData['mensaje']= 'El numero de identificacion ya existe'
+
+                return objData
+
 
         username = nombre[0:1] + apellidos + identificacion[-3:]
         username = username.lower()
@@ -44,12 +56,12 @@ def crearAdministradorModule():
                     (username,contrase))
         usuario_id = cur.lastrowid
 
-        cur.execute('''INSERT INTO inversores (usuario_id, identificacion, nombres, apellidos,telefono,email) VALUES (%s,%s,%s,%s,%s,%s);
-                    ''',(usuario_id,identificacion, nombre,apellidos,telefono ,email))
+        cur.execute('''INSERT INTO administrativos (usuario_id, identificacion, nombre, apellido,telefono,email,pais) VALUES (%s,%s,%s,%s,%s,%s,%s);
+                    ''',(usuario_id,identificacion, nombre,apellidos,telefono ,email,pais))
 
         mydb.commit()
         cur.close()
-        objData= collections.OrderedDict()
+        
         objData['contra']= contra
         objData['url']= '/home'
         objData['redirect']= True
@@ -58,24 +70,50 @@ def crearAdministradorModule():
         return objData
 
 
-
-
-
 def editarAdministradorModule():
     if request.method == "POST":
-        pass
+        usuario = request.form['usuario']
+        contra = str(uuid.uuid1())
+        contra = contra[0:5]
+        contrase = customhash.hash(contra)
 
+        cur = mydb.cursor()
 
-def udateAdministradorModule():
-    if request.method == "POST":
-        pass
+        cur.execute('''SELECT username FROM usuarios WHERE usuario_id = %s;''',(usuario,))
+        data = cur.fetchall()
+        username = data[0]
+        
+        objData= collections.OrderedDict()
+        cur.execute(''' UPDATE usuarios 
+                        SET contrasenia = %s 
+                        WHERE usuario_id = %s;''',
+                    (contrase,usuario))
+        mydb.commit()
+        cur.close()
 
+        objData['contra']= contra
+        objData['url']= '/home'
+        objData['redirect']= True
+        objData['username']= username
 
-def eliminarAdministradorModule():
-    if request.method == "POST":
-        pass
+        return objData
 
 
 def administrarAdministrativosTablaModulo():
     if request.method == "POST":
-        pass
+        cur = mydb.cursor()
+
+        cur.execute('''SELECT * FROM administrativos''')
+        data = cur.fetchall()
+        dataColl = []
+        if data:
+            for row in data:
+                objData= collections.OrderedDict()
+                objData['usuario_id']= row[1]
+                objData['nombre']= row[3] +' '+row[4]
+                objData['identificacion']= row[2]
+                objData['email']= row[6]
+                objData['telefono']  = row[5]
+                objData['pais']  = row[7]
+                dataColl.append(objData)
+    return dataColl
