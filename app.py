@@ -14,10 +14,10 @@ import modules.customhash as customhash
 
 
 #url
-from modules.inversor.indicadores import indicadores
+from modules.inversor.indicadores import indicadoresModule ,indicadoresUrlModulo
 from modules.login import loginVerifyModule
-from modules.administrador.administrador import crearAdministradorModule,editarAdministradorModule,udateAdministradorModule,eliminarAdministradorModule,administrarAdministrativosTablaModulo
-from modules.inversor.inversor import crearInversorModule,editarInversorModule,udateInversorModule,eliminarInversorModule,administrarInversorTablaModulo
+from modules.administrador.administrador import crearAdministradorModule,editarAdministradorModule,administrarAdministrativosTablaModulo
+from modules.inversor.inversor import crearInversorModule,editarInversorModule,administrarInversorTablaModulo
 from modules.historicos import historicosTablaModulo,indicadoresHistoricosModulo
 
 
@@ -76,6 +76,19 @@ def login():
         logger.exception(error)
 
 
+@app.route("/logout", methods=['POST','GET'])
+def logout():
+    try:
+        Initial()
+        if session:
+            if session.get("SessionId"):
+                sessionId = session["SessionId"]
+                authentication.logout(sessionId)
+                self.clearSession()
+        return redirect("/")
+
+    except Exception as error:
+            logger.exception(error)
 @app.route('/loginVerify', methods=["GET", "POST"])
 def loginVerify():
     try:
@@ -94,10 +107,18 @@ def home():
 
  #------------------indicadores------------
 @app.route('/indicadores')
+def indicadores():
+    try:
+        url = indicadoresModule()
+        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/indicadoresUrl')
 def indicadoresUrl():
     try:
-        url = indicadores()
-        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
+        objData = indicadoresUrlModulo()
+        return Response(json.dumps({ 'data' : objData }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
 
@@ -126,15 +147,16 @@ def crearInversores():
     except Exception as error:
         logger.exception(error)
 
-@app.route('/crearInversor')
+@app.route('/crearInversor', methods=["GET", "POST"])
 def crearInversor():
     try:
-        return render_template('crearInversores.html')
+        objData = crearInversorModule()
+        return Response(json.dumps({ 'data' : objData }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
 
 
-@app.route('/editarInversores')
+@app.route('/editarInversores', methods=["GET", "POST"])
 def editarInversores():
     try:
         return render_template('crearInversores.html')
@@ -142,10 +164,18 @@ def editarInversores():
         logger.exception(error)
 
 
-@app.route('/administrarInversores')
+@app.route('/administrarInversores', methods=["GET", "POST"])
 def administrarInversores():
     try:
         return render_template('administrarInversores.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/administrarInversoresTabla', methods=["GET", "POST"])
+def administrarInversoresTabla():
+    try:
+        dataColl = administrarInversorTablaModulo()
+        return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
 
@@ -166,29 +196,11 @@ def crearAdministrador():
         logger.exception(error)
 
 
-@app.route('/editarAdministrador')
+@app.route('/editarAdministrador', methods=["GET", "POST"])
 def editarAdministrador():
     try:
-        url = indicadores()
-        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
-    except Exception as error:
-        logger.exception(error)
-
-
-@app.route('/udateAdministrador')
-def udateAdministrador():
-    try:
-        url = indicadores()
-        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
-    except Exception as error:
-        logger.exception(error)
-
-
-@app.route('/eliminarAdministrador')
-def eliminarAdministrador():
-    try:
-        url = indicadores()
-        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
+        objData = editarAdministradorModule()
+        return Response(json.dumps({ 'data' : objData }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
 
@@ -201,11 +213,11 @@ def administrarAdministrativos():
         logger.exception(error)
 
 
-@app.route('/administrarAdministrativosTabla')
+@app.route('/administrarAdministrativosTabla', methods=["GET", "POST"])
 def administrarAdministrativosTabla():
     try:
-        url = indicadores()
-        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
+        dataColl = administrarAdministrativosTablaModulo()
+        return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
 
@@ -219,7 +231,7 @@ def historicos():
     except Exception as error:
         logger.exception(error)
 
-@app.route('/historicosTabla')
+@app.route('/historicosTabla', methods=["GET", "POST"])
 def historicosTabla():
     try:
         dataColl = indicadores()
