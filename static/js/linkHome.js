@@ -24,6 +24,7 @@ function cargarIndicadores() {
 }
 
 function cargarIndicadoresSuccess(data) {
+    
     $('#contenido').html(data.data);
 }
 

@@ -14,11 +14,14 @@
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/bootstrap-icons/bootstrap-icons.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename ='assets/css/app.css')}}">
     <link rel="shortcut icon" href="{{url_for('static', filename ='assets/images/favicon.svg')}}" type="image/x-icon')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename ='assets/vendors/simple-datatables/style.css')}}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.1/css/dataTables.bootstrap5.min.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/1.11.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
+    
     
 
 </head>
@@ -90,6 +93,12 @@
                                 <span>Auditoria</span>
                             </a>
                         </li>
+                        <li id="auditoria" class="sidebar-item">
+                            <a onclick="window.location.href='/logout'" class='sidebar-link'>
+                                <i class="bi bi-x-circle-fill"></i>
+                                <span>Salir</span>
+                            </a>
+                        </li>
                         
                     </ul>
                 </div>
@@ -117,7 +126,7 @@
             
         </div> 
         <script src="{{url_for('static', filename ='js/linkHome.js')}}"></script>
-        <script src="{{url_for('static', filename ='assets/vendors/simple-datatables/simple-datatables.js')}}"></script>
+        <script src="https://cdn.datatables.net/1.11.1/js/dataTables.bootstrap5.min.js"></script>
         <script src="{{url_for('static', filename ='assets/js/main.js')}}"></script>  
         <script src="{{url_for('static', filename ='assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
         <script src="{{url_for('static', filename ='assets/js/bootstrap.bundle.min.js')}}"></script>
@@ -125,6 +134,7 @@
         <script src="{{url_for('static', filename ='assets/js/pages/dashboard.js')}}"></script>
         
 
+        
 </body>
 
 </html>

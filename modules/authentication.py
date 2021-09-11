@@ -37,12 +37,29 @@ def authenticate(id, contra):
     response= collections.OrderedDict()
     
     if user != None:
+        
+
         hashedPass = customhash.hash(contra)
         contrasena = user["contrasenia"]
         username = user["username"]
         if contrasena == hashedPass and username == id:
-            session["usuario"] = id
+
+            usuario_id = user["usuario_id"]
+            rol = str(user["rol"])
+            if rol == '1':
+                cur = mydb.cursor()
+                cur.execute(" SELECT * FROM administrativos WHERE usuario_id = %s", (usuario_id,))
+            else:
+                cur = mydb.cursor()
+                cur.execute(" SELECT * FROM inversores WHERE usuario_id = %s", (usuario_id,))
+            data = cur.fetchone()
+
+            nombre = data[3] + ' ' + data[4]
+
+            cur.close()
+            session["usuario"] = usuario_id
             response['url'] = '/home'
+            response['nombre'] = nombre
             response['redirect'] = True
             return response
         else:

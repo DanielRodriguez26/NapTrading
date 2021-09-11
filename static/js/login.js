@@ -26,14 +26,14 @@ function registarEventos() {
 
 
 function cargarLoginVerifySuccess(responseJson) {
-    debugger
+    
     var data = responseJson.data
 
     if (data.redirect) {
         Swal.fire({
-            position: 'top-end',
             icon: 'success',
             title: 'Bienvenido',
+            text: data.nombre,
             showConfirmButton: false,
             timer: 1500
         }).then((result) => {
