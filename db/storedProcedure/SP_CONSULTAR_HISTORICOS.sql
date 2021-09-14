@@ -26,10 +26,10 @@ BEGIN
           a.descripcion
       FROM auditorias  as a
       INNER JOIN inversores as i ON a.usuario_id  = i.usuario_id
-      LIMIT 20 OFFSET inDesde;
+      LIMIT 10 OFFSET inDesde;
 
     select count(1) into totalRegistros
-    from tmpAuditoria
+    from auditorias
     ;
 
     select  *, totalRegistros AS totalRegistros

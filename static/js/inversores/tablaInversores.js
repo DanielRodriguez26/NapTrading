@@ -48,7 +48,7 @@ function cargarAdministrativosTablaSuccess() {
         bLengthChange: false,
         processing: false,
         serverSide: true,
-        pageLength: 5,
+        pageLength: 10,
         ajax: {
             type: 'POST',
             url: '/administrarInversoresTabla',

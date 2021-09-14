@@ -47,7 +47,7 @@ function cargarAdministrativosTablaSuccess() {
         bLengthChange: false,
         processing: false,
         serverSide: true,
-        pageLength: 5,
+        pageLength: 10,
         paging: false,
         ajax: {
             type: 'POST',
