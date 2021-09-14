@@ -25,10 +25,10 @@ BEGIN
             i.telefono,
             i.pais
         FROM inversores  i
-        LIMIT 20 OFFSET inDesde;
+        LIMIT 10 OFFSET inDesde;
 
     select count(1) into totalRegistros
-    from tmpInversores
+    from inversores
     ;
 
     select  *, totalRegistros AS totalRegistros

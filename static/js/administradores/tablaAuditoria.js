@@ -34,7 +34,7 @@ function registarEventos() {
 }
 
 function cargarAuditoriaTablaSuccess() {
-    $('#tbltableAuditoria').empty().append(`
+    $('#tblAuditoria').empty().append(`
     <table class="table table-striped" id="tableAuditoria">
 `);
     //deleting operators to reset
@@ -47,7 +47,7 @@ function cargarAuditoriaTablaSuccess() {
         bLengthChange: false,
         processing: false,
         serverSide: true,
-        pageLength: 5,
+        pageLength: 10,
         ajax: {
             type: 'POST',
             url: '/auditoriaTabla',
@@ -85,6 +85,7 @@ function cargarAuditoriaTablaSuccess() {
         },
         ],
         'drawCallback': () => {
+            debugger
             // Create an array of labels containing all table headers
             var labels = [];
             $('#tableAuditoria thead th').each(function () {
@@ -98,6 +99,6 @@ function cargarAuditoriaTablaSuccess() {
             });
         }
     });
-   
+
 }
 
