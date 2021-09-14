@@ -48,10 +48,7 @@ function cargarAdministrativosTablaSuccess() {
         processing: false,
         serverSide: true,
         pageLength: 5,
-        columnDefs: [
-            { orderable: true, targets: 0 }
-        ],
-        order: [[0, 'asc']],
+        paging: false,
         ajax: {
             type: 'POST',
             url: '/administrarAdministrativosTabla',
@@ -137,6 +134,7 @@ function cargarAdministrativosTablaSuccess() {
             });
         }
     });
+    new $.fn.dataTable.FixedHeader( $tblOperadores );
 }
 
 function cambiarContrasena(usuario_id) {
