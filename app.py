@@ -11,6 +11,8 @@ import datetime
 import modules.authentication as authentication
 import modules.globalvariables as gb
 import modules.customhash as customhash
+import modules.audit as audit
+import modules.customhash as customhash
 
 
 #url
@@ -19,7 +21,8 @@ from modules.login import loginVerifyModule
 from modules.administrador.administrador import crearAdministradorModule,editarAdministradorModule,administrarAdministrativosTablaModulo
 from modules.inversor.inversor import crearInversorModule,editarInversorModule,administrarInversorTablaModulo,agregarCapitalModule
 from modules.historicos import historicosTablaModulo,indicadoresHistoricosModulo
-from modules.administrador.auditoria import auditoriaTablaModule
+from modules.cambiarContrasena import cambiarContrasenaModulo
+
 
 
 
@@ -76,7 +79,7 @@ def login():
     except Exception as error:
         logger.exception(error)
 
-
+#------------------Login-------------
 @app.route("/logout", methods=['POST','GET'])
 def logout():
     try:
@@ -90,6 +93,7 @@ def logout():
 
     except Exception as error:
             logger.exception(error)
+
 @app.route('/loginVerify', methods=["GET", "POST"])
 def loginVerify():
     try:
@@ -98,6 +102,7 @@ def loginVerify():
     except Exception as error:
         logger.exception(error)
 
+#-----------------------------------------
 
 @app.route('/home')
 def home():
@@ -128,6 +133,27 @@ def indicadoresUrl():
 def solicitudes():
     try:
         return render_template('solicitudes.html')
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/solicitudesTabla', methods=["GET", "POST"])
+def solicitudesTabla():
+    try:
+        dataColl = solicitudesTablaModulo()
+        return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+    
+@app.route('/finalizarTicket', methods=["GET", "POST"])
+def finalizarTicket():
+    try:
+        dataColl = finalizarTicketModulo()    
+        objAuditData=finalizarTicketModuloAudit()
+        print(objAuditData['monto'])
+        auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Ticket finalizado', 'Se dio por finalizado el ticket '+str(objAuditData['historicoMovimientoId'])+' '+str(objAuditData['tipoMovimiento'])+' del inversor '+ str(objAuditData['nombre'])+' de identificacion '+str(objAuditData['identificacion'])+' con fecha limite de '+str(objAuditData['fechaLimite'])+' por un monto de ' +str(objAuditData['monto'])+ ' a los siguientes datos ' + str(objAuditData['email']) +' '+ str(objAuditData['metodo_desembolso']) , '')
+        audit.AddAudit(auditory)
+
+        return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
 
@@ -276,7 +302,22 @@ def indicadoresHistoricos():
     except Exception as error:
         logger.exception(error)
 
-#crearInversores
+@app.route('/cambiarContrasena')
+def cambiarContrasena():
+    try:
+        return render_template('cambiarContrasena.html')
+    except Exception as error:
+        logger.exception(error)
+#--------------------------------
+
+@app.route('/cambiarContrasenaLogica', methods=["GET", "POST"])
+def cambiarContrasenaLogica():
+    try:
+        dataColl = cambiarContrasenaModulo()
+        return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
 
 if __name__ == '__main__':
     app.run(port = 2000, debug = True)

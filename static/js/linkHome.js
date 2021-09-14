@@ -12,6 +12,7 @@ function registarEventos() {
     cargarLinksAdministrarInversores()
     cargarLinksCrearAdministrativos()
     cargarLinksAdministrarAdministrativos()
+    cargarLinksCambiarContrasena()
 }
 
 function cargarIndicadores() {
@@ -70,9 +71,10 @@ function cargarLinksSolicitudes() {
     $('#solicitudes').click( function () {
        $('#contenido').load('solicitudes');
     });
-}/*
-function cargarLinksHomeInversor3() {
-    $('#homeInversor').click( function () {
-        $('#contenido').load('administrarInversores');
+}
+
+function cargarLinksCambiarContrasena() {
+    $('#cambiarContrasena').click( function () {
+        $('#contenido').load('cambiarContrasena');
     });
-} */
+}

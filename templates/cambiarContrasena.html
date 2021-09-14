@@ -1,0 +1,49 @@
+
+<div class="col-md-6 col-12 offset-md-2">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Cambiar Contraseña</h4>
+        </div>
+        <div class="card-content">
+            <div class="card-body">
+
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="password-vertical">Contraseña Actual</label>
+                                <input type="password" id="contrasena" class="form-control" name="contact" placeholder="Contraseña" >
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="password-vertical">Nueva Contraseña</label>
+                                <input type="password" id="nuevaContrasena" class="form-control" name="contact" placeholder="Nueva Contraseña" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                                onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Debe tener al menos 8 caracteres, incluyendo al menos una mayúscula, minúscula y un número' : ''); if(this.checkValidity()) form.verifContra.pattern = this.value;" required>                           
+                            </div>
+                            <div class="alert alert-danger" id="messageValidarContrasena" style="display: none;">
+                                <p>La contraseña debe tener minimo 8 caracteres, incluyendo al menos una mayúscula, minúscula y un número.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="password-vertical">Confirme la Nueva Contraseña</label>
+                                <input type="password" id="confirmarContrasena" class="form-control" name="contact" placeholder="Confirmar Contraseña" required="required" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                 onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Las dos contraseñas deben coincidir' : '');" required>                                
+                            </div>
+                            <div class="alert alert-danger" id="messageValidarContrasena2" style="display: none;">
+                                <p> Las dos contraseñas deben coincidir.</p>
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <button id="btnCambiar" class="btn btn-primary me-1 mb-1" >Crear</button>
+                            <button id="btnLimpiar" class="btn btn-light-secondary me-1 mb-1">Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../static/js/cambiarContrasena.js"></script>
+</div>
