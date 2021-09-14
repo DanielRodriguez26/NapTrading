@@ -8,3 +8,35 @@
     <script src="../static/js/inversores/tablaInversores.js"></script>
 </section>
 
+<div class="modal fade text-left show" id="modalCapital" tabindex="-1" aria-labelledby="myModalLabel33"  aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33">Agregar Capital</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <form action="#">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="basicInput">Monto del Capital</label>
+                        <input type="text" id="montoCapital" class="form-control" id="basicInput">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                        <i class="bx bx-x d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">Cancelar</span>
+                    </button>
+                    <button type="button" class="btn btn-primary ml-1" id="guardarCapital"data-bs-dismiss="modal">
+                        <i class="bx bx-check d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">Aceptar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

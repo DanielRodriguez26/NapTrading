@@ -1,47 +1,46 @@
-
 USE inversoresnaptrading;
 
-DROP procedure IF EXISTS SP_CONSULTAR_HISTORICOS;
+DROP procedure IF EXISTS SP_CONSULTAR_AUDITORIAS;
 
 DELIMITER $$
-USE dibanka$$
-CREATE PROCEDURE SP_CONSULTAR_HISTORICOS(
-  IN inDesde INT, -- obligatorio
+USE inversoresnaptrading$$
+    CREATE PROCEDURE SP_CONSULTAR_AUDITORIAS(IN inDesde INT)
+    -- obligatorio
 BEGIN
-  DECLARE totalRegistros BIGINT;
-  
-  
-  CALL SP_VERIFICA_TABLA_EXISTE('tmpHistoricos');
+    DECLARE totalRegistros BIGINT;
+    
+    
+    CALL SP_VERIFICA_TABLA_EXISTE('tmpAuditoria');
 	IF @table_exists = 1 THEN
-		DROP TEMPORARY TABLE tmpHistoricos;
+		DROP TEMPORARY TABLE tmpAuditoria;
 	END IF;
 
-  CREATE TEMPORARY TABLE tmpHistoricos
-    SELECT 
-    CONCAT( i.nombres +' '+ i.apellido) ,
-    i.identificacion,
-    i.email,
-    i.telefono,
-    h.historico_movimientos_id,
-    h.fecha,
-    h.tipo_movimiento,
-    h.monto,
-    h.estado
-    FROM inversores  i
-    INNER JOIN historicomovimientos  h ON i.usuario_id = h.usuario_id
- 
-    LIMIT 20 OFFSET inDesde;
-  
-  
-  select count(1) into totalRegistros
-  from tmpHistoricos
-  ;
-  CALL SP_VERIFICA_TABLA_EXISTE('tmpHistoricos');
-  IF @table_exists = 1 THEN
-    DROP TEMPORARY TABLE tmpHistoricos;
-  END IF;
+
+    CREATE TEMPORARY TABLE tmpAuditoria
+        SELECT
+          i.nombres ,
+          i.apellidos,
+          i.identificacion,
+          a.fecha,
+          a.accion,
+          a.descripcion
+      FROM auditorias  as a
+      INNER JOIN inversores as i ON a.usuario_id  = i.usuario_id
+      LIMIT 20 OFFSET inDesde;
+
+    select count(1) into totalRegistros
+    from tmpAuditoria
+    ;
+
+    select  *, totalRegistros AS totalRegistros
+    from tmpAuditoria 
+    ;
+    CALL SP_VERIFICA_TABLA_EXISTE('tmpAuditoria');
+    IF @table_exists = 1 THEN
+    DROP TEMPORARY TABLE tmpAuditoria;
+    END IF;
         
 END$$
 DELIMITER ;
 
-call SP_ABC(0, '860050750', null, 0);
+CALL  SP_CONSULTAR_AUDITORIAS(0);

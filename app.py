@@ -17,8 +17,9 @@ import modules.customhash as customhash
 from modules.inversor.indicadores import indicadoresModule ,indicadoresUrlModulo
 from modules.login import loginVerifyModule
 from modules.administrador.administrador import crearAdministradorModule,editarAdministradorModule,administrarAdministrativosTablaModulo
-from modules.inversor.inversor import crearInversorModule,editarInversorModule,administrarInversorTablaModulo
+from modules.inversor.inversor import crearInversorModule,editarInversorModule,administrarInversorTablaModulo,agregarCapitalModule
 from modules.historicos import historicosTablaModulo,indicadoresHistoricosModulo
+from modules.administrador.auditoria import auditoriaTablaModule
 
 
 
@@ -84,7 +85,7 @@ def logout():
             if session.get("SessionId"):
                 sessionId = session["SessionId"]
                 authentication.logout(sessionId)
-                self.clearSession()
+                clearSession()
         return redirect("/")
 
     except Exception as error:
@@ -139,6 +140,20 @@ def auditoria():
         logger.exception(error)
 
 
+@app.route('/auditoriaTabla', methods=["GET", "POST"])
+def auditoriaTabla():
+    try:
+        
+        dataColl = auditoriaTablaModule()
+        recordsTotal=dataColl[0]
+        recordsFiltered=dataColl[0]
+        dataColl.remove(recordsTotal) 
+        return Response(json.dumps({ 'data' : dataColl,'recordsTotal':recordsTotal,'recordsFiltered':recordsFiltered }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
+
+
 # -------------------Inversores------------------------
 @app.route('/crearInversores')
 def crearInversores():
@@ -175,6 +190,20 @@ def administrarInversores():
 def administrarInversoresTabla():
     try:
         dataColl = administrarInversorTablaModulo()
+        recordsTotal=dataColl[0]
+        recordsFiltered=dataColl[0]
+        dataColl.remove(recordsTotal) 
+        return Response(json.dumps({ 'data': dataColl,'recordsTotal':recordsTotal,'recordsFiltered':recordsFiltered }), status=200, mimetype='application/json')
+    except Exception as error:
+        logger.exception(error)
+
+
+@app.route('/agregarCapital', methods=["GET", "POST"])
+def agregarCapital():
+    try:
+        usuario  = request.form['usuario']  
+        capital  = request.form['capital']
+        dataColl = agregarCapitalModule(usuario,capital)
         return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)

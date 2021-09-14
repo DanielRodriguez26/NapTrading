@@ -29,6 +29,7 @@ $(document).ready(()=> {
     registarEventos()
 })
 function registarEventos() {
+    $('#modalCapital').modal('hide');
     cargarAdministrativosTablaSuccess()
     
 }
@@ -48,10 +49,6 @@ function cargarAdministrativosTablaSuccess() {
         processing: false,
         serverSide: true,
         pageLength: 5,
-        columnDefs: [
-            { orderable: true, targets: 0 }
-        ],
-        order: [[0, 'asc']],
         ajax: {
             type: 'POST',
             url: '/administrarInversoresTabla',
@@ -144,7 +141,7 @@ function cargarAdministrativosTablaSuccess() {
             $('.agregar-capital').click((e) => {
                 
                 let usuario_id = e.currentTarget.getAttribute('data-id');
-                agregarCapital(usuario_id)
+                agregarCapitalModal(usuario_id)
             });
         }
     });
@@ -194,4 +191,34 @@ function cambiarContrasenaSuccess(responseJson) {
         })
     }
 
+}
+
+function agregarCapitalModal(usuario_id) {
+
+    $('#modalCapital').modal('show')
+
+    $('#guardarCapital').click(()=>{
+        agregarCapital(usuario_id)
+    })
+}
+
+function agregarCapital(usuario_id) {
+    var data = new FormData();
+    data.append('usuario' , usuario_id);
+    data.append('capital' , $('#montoCapital').val())
+
+    $.ajax({
+        data:data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        url: '/agregarCapital',
+        success: function (responseJson, status, statusCode) {
+            cambiarContrasenaSuccess(responseJson, statusCode.status);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            errorConsultandoAPI(jqXHR, textStatus, errorThrown);
+        }
+    })
 }

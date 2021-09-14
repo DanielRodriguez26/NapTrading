@@ -62,6 +62,7 @@ def crearInversorModule():
 
         mydb.commit()
         cur.close()
+        agregarCapitalModule(usuario_id,capital)
         
         objData['contra']= contra
         objData['url']= '/home'
@@ -100,18 +101,102 @@ def administrarInversorTablaModulo():
         desde= int(request.values.get('start'))
         cur = mydb.cursor()
 
-        cur.execute('''SELECT * FROM inversores''')
+        cur.execute('''CALL SP_CONSULTAR_INVERSORES(%s);''',(desde,))
         data = cur.fetchall()
         dataColl = []
         if data:
-            
+            recordsTotal =  data[0][7]
+            dataColl.append(recordsTotal)
             for row in data:
                 objData= collections.OrderedDict()
-                objData['usuario_id']= row[1]
-                objData['nombre']= row[3] +' '+row[4]
-                objData['identificacion']= row[2]
-                objData['email']= row[6]
+                objData['usuario_id']= row[0]
+                objData['nombre']= row[1] +' '+row[2]
+                objData['identificacion']= row[3]
+                objData['email']= row[4]
                 objData['telefono']  = row[5]
-                objData['pais']  = row[7]
+                objData['pais']  = row[6]
                 dataColl.append(objData)
         return dataColl
+
+
+def agregarCapitalModule(usuario_id,capital):
+    if request.method == "POST":
+        cur = mydb.cursor()
+        email =None
+
+        cur.execute(''' SELECT 
+                        SUM(h.monto),
+                        i.email
+                        FROM usuarios u
+                        INNER JOIN historicomovimientos h on h.usuario_id = u.usuario_id
+                        INNER JOIN inversores i on i.usuario_id = u.usuario_id
+                        WHERE u.usuario_id =%s''', (usuario_id,))
+        data = cur.fetchone()
+
+        catidadHis= int(data[0])
+
+        capitalSum = int(capital)+catidadHis
+        email = data[1]
+
+        cur.execute(''' INSERT INTO historicomovimientos
+                        (usuario_id,fecha,
+                        tipo_movimiento,
+                        monto,estado,
+                        fecha_limite_solicitud,
+                        email_solicitud) 
+                        VALUES(%s,NOW(),'IC',%s,0,NOW(),%s)
+                    ''',(usuario_id,capital,email))
+        historico_id = cur.lastrowid
+
+        cur.execute(''' INSERT INTO capital
+                        (historico_movimiento_id,
+                        monto,
+                        fecha,
+                        disponibilidad) 
+                        VALUES(%s,%s,NOW(),%s)''',(historico_id,capital,capitalSum))
+        mydb.commit()
+        cur.close()
+        return True
+
+
+
+
+
+'''def administrarInversorTablaExcelModulo():
+    if request.method == "POST":
+        desde= int(request.values.get('start'))
+        cur = mydb.cursor()
+
+        cur = mysqlPagaduria.cursor()
+        cur.execute(,(desde,))
+        data = cur.fetchall()
+        cur.close()
+        mysqlPagaduria.close()
+
+        output = io.BytesIO()
+        workbook = xlwt.Workbook()
+        sh = workbook.add_sheet('ProductoRetirados')
+        
+        #Headers
+        sh.write(0, 0, 'Nombre')
+        sh.write(0, 1, 'Apellidos')
+        sh.write(0, 2, 'Desprendible')
+        sh.write(0, 3, 'Fecha de Retiro')
+        sh.write(0, 4, 'Nombre funcionario que Retiró')
+        sh.write(0, 5, 'Código de Descuento')
+
+        idx = 0
+
+        for row in data:
+                sh.write(idx+1, 0, row[0])
+                sh.write(idx+1, 1, row[1])
+                sh.write(idx+1, 2, row[2])
+                sh.write(idx+1, 3, row[3])
+                sh.write(idx+1, 4, row[4])
+                sh.write(idx+1, 5, row[5])
+
+                idx += 1
+        idXls = uuid.uuid1()
+        workbook.save("static/temp/DescuentosProductoRetiradosDibanka"+ str(idXls) +".xls")
+        
+        return Response(json.dumps({'url':"/static/temp/Inversores"+ str(idXls) +".xls"}),  mimetype='application/json')'''
