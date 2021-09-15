@@ -35,7 +35,7 @@ function registarEventos() {
 
 function cargarAdministrativosTablaSuccess() {
     $('#tbltableAdministrativos').empty().append(`
-    <table class="table table-striped" id="tableAdministrativos">
+    <table class="table table-striped" id="tableAdministrativos"></table>
 `);
     //deleting operators to reset
     

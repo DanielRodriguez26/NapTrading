@@ -24,9 +24,19 @@ BEGIN
           a.fecha,
           a.accion,
           a.descripcion
-      FROM auditorias  as a
-      INNER JOIN inversores as i ON a.usuario_id  = i.usuario_id
-      LIMIT 10 OFFSET inDesde;
+	   FROM auditorias  as a
+	   INNER JOIN inversores as i ON a.usuario_id  = i.usuario_id
+    	UNION
+     	SELECT
+	      ad.nombre,
+         ad.apellido,
+         ad.identificacion,
+         a.fecha,
+         a.accion,
+         a.descripcion
+     FROM auditorias  as a
+     INNER JOIN administrativos  as ad ON a.usuario_id  = ad.usuario_id
+      LIMIT 20 OFFSET inDesde;
 
     select count(1) into totalRegistros
     from auditorias
