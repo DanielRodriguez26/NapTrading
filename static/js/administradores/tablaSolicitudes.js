@@ -46,7 +46,7 @@ function cargarSolicitudesTablaSuccess() {
         bLengthChange: false,
         processing: false,
         serverSide: true,
-        pageLength: 5,
+        pageLength: 10,
         columnDefs: [
             { orderable: true, targets: 0 }
         ],
@@ -138,7 +138,8 @@ function cargarSolicitudesTablaSuccess() {
                     $(this).attr('data-label', labels[column]);
                 });
             });
-            $('.finalizar-ticket').click((e) => {                
+            $('.finalizar-ticket').click((e) => {  
+                debugger              
                 let movimiento_id = e.currentTarget.getAttribute('data-id');
                 finalizarTicket(movimiento_id)
             });

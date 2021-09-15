@@ -17,16 +17,15 @@ mydb= MySQLdb.connect(
 
 def solicitudesTablaModulo():
     if request.method == "POST":
+        desde= int(request.values.get('start'))
 
         cur = mydb.cursor()
-        cur.execute('''select h.historico_movimientos_id, i.nombres, i.apellidos, i.identificacion,h.email_solicitud, i.telefono, h.fecha, s.descripcion, h.monto,h.fecha_limite_solicitud, h.metodo_desembolso
-                            from historicomovimientos as h
-                            inner join inversores as i on i.usuario_id = h.usuario_id
-                            inner join siglasmovimientos as s on  s.siglas = h.tipo_movimiento
-                            where h.estado=1  order by h.fecha desc''')
+        cur.execute('''CALL  SP_CONSULTAR_SOLICITUDES(%s);;''',(desde,))
         data = cur.fetchall()        
         dataColl = []
         if data:
+            recordsTotal =  data[0][11]
+            dataColl.append(recordsTotal)
             for row in data:
                 objData= collections.OrderedDict()
                 objData['movimiento_id']= row[0]
@@ -53,7 +52,7 @@ def finalizarTicketModulo():
         cur.execute(''' UPDATE historicomovimientos 
                         SET estado = 0 
                         WHERE historico_movimientos_id = %s;''',
-                        (movimientoID))
+                        (movimientoID,))
         mydb.commit()
         cur.close()
         dataColl = []
@@ -75,7 +74,7 @@ def finalizarTicketModuloAudit():
                         inner join inversores as i on i.usuario_id = h.usuario_id
                         inner join siglasmovimientos as s on  s.siglas = h.tipo_movimiento
                         where h.historico_movimientos_id=%s; ''',
-                        (movimientoID))
+                        (movimientoID,))
         auditdata = cur.fetchall()        
         auditDataColl = []
         if auditdata:
