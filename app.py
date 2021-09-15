@@ -22,8 +22,8 @@ from modules.administrador.administrador import crearAdministradorModule,editarA
 from modules.inversor.inversor import crearInversorModule,editarInversorModule,administrarInversorTablaModulo,agregarCapitalModule
 from modules.historicos import historicosTablaModulo,indicadoresHistoricosModulo
 from modules.cambiarContrasena import cambiarContrasenaModulo
-
-
+from modules.administrador.solicitudes import finalizarTicketModulo, finalizarTicketModuloAudit, solicitudesTablaModulo
+from modules.administrador.auditoria import auditoriaTablaModule
 
 
 app = Flask(__name__)
@@ -140,7 +140,10 @@ def solicitudes():
 def solicitudesTabla():
     try:
         dataColl = solicitudesTablaModulo()
-        return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
+        recordsTotal=dataColl[0]
+        recordsFiltered=dataColl[0]
+        dataColl.remove(recordsTotal)
+        return Response(json.dumps({ 'data': dataColl,'recordsTotal':recordsTotal,'recordsFiltered':recordsFiltered  }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
     
