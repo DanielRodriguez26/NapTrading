@@ -19,9 +19,11 @@ import modules.customhash as customhash
 from modules.inversor.indicadores import indicadoresModule ,indicadoresUrlModulo
 from modules.login import loginVerifyModule
 from modules.administrador.administrador import crearAdministradorModule,editarAdministradorModule,administrarAdministrativosTablaModulo
+from modules.administrador.solicitudes import solicitudesTablaModulo,finalizarTicketModulo,finalizarTicketModuloAudit
 from modules.inversor.inversor import crearInversorModule,editarInversorModule,administrarInversorTablaModulo,agregarCapitalModule
 from modules.historicos import historicosTablaModulo,indicadoresHistoricosModulo
 from modules.cambiarContrasena import cambiarContrasenaModulo
+from modules.administrador.auditoria import auditoriaTablaModule
 
 
 
