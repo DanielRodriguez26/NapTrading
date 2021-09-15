@@ -35,13 +35,12 @@ function registarEventos() {
 
 function cargarAuditoriaTablaSuccess() {
     $('#tblAuditoria').empty().append(`
-    <table class="table table-striped" id="tableAuditoria">
+    <table class="table table-striped" id="tableAuditoria"></table>
 `);
     //deleting operators to reset
     
     $tblAuditoria = $('#tableAuditoria').DataTable({
         responsive: true,
-        searching: false,
         language: espanol,
         info: false,
         bLengthChange: false,
@@ -85,17 +84,20 @@ function cargarAuditoriaTablaSuccess() {
         },
         ],
         'drawCallback': () => {
-            debugger
             // Create an array of labels containing all table headers
             var labels = [];
             $('#tableAuditoria thead th').each(function () {
                 labels.push($(this).text());
             });
+
             // Add data-label attribute to each cell
             $('#tableAuditoria tbody tr').each(function () {
                 $(this).find('td').each(function (column) {
                     $(this).attr('data-label', labels[column]);
                 });
+            });
+            $('#myInput').on( 'keyup', function () {
+                table.search( this.value ).draw();
             });
         }
     });
