@@ -3,6 +3,7 @@ from flask_mysqldb import MySQLdb
 from werkzeug.utils import secure_filename
 
 
+
 import os
 import ast
 import logging
@@ -16,6 +17,7 @@ import modules.customhash as customhash
 
 
 #url
+from modules.authentication import permisosModules
 from modules.inversor.indicadores import indicadoresModule ,indicadoresUrlModulo
 from modules.login import loginVerifyModule
 from modules.administrador.administrador import crearAdministradorModule,editarAdministradorModule,administrarAdministrativosTablaModulo
@@ -107,7 +109,19 @@ def loginVerify():
 @app.route('/home')
 def home():
     try:
-        return render_template('index.html')
+        if "usuario_id" in session:  
+            return render_template('index.html')
+        return render_template("403.html")
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/permisos')
+def permisos():
+    try:
+        if "usuario_id" in session:
+            dataColl = permisosModules()
+            return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')            
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -115,16 +129,20 @@ def home():
 @app.route('/indicadores')
 def indicadores():
     try:
-        url = indicadoresModule()
-        return Response(json.dumps({ 'data' : url }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = indicadoresModule()
+            return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
 @app.route('/indicadoresUrl')
 def indicadoresUrl():
     try:
-        objData = indicadoresUrlModulo()
-        return Response(json.dumps({ 'data' : objData }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = indicadoresUrlModulo()
+            return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -132,31 +150,37 @@ def indicadoresUrl():
 @app.route('/solicitudes')
 def solicitudes():
     try:
-        return render_template('solicitudes.html')
+        if "usuario_id" in session:        
+            return render_template('solicitudes.html')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
 @app.route('/solicitudesTabla', methods=["GET", "POST"])
 def solicitudesTabla():
     try:
-        dataColl = solicitudesTablaModulo()
-        recordsTotal=dataColl[0]
-        recordsFiltered=dataColl[0]
-        dataColl.remove(recordsTotal)
-        return Response(json.dumps({ 'data': dataColl,'recordsTotal':recordsTotal,'recordsFiltered':recordsFiltered  }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = solicitudesTablaModulo()
+            recordsTotal=dataColl[0]
+            recordsFiltered=dataColl[0]
+            dataColl.remove(recordsTotal)
+            return Response(json.dumps({ 'data': dataColl,'recordsTotal':recordsTotal,'recordsFiltered':recordsFiltered  }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
     
 @app.route('/finalizarTicket', methods=["GET", "POST"])
 def finalizarTicket():
     try:
-        dataColl = finalizarTicketModulo()    
-        objAuditData=finalizarTicketModuloAudit()
-        print(objAuditData['monto'])
-        auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Ticket finalizado', 'Se dio por finalizado el ticket '+str(objAuditData['historicoMovimientoId'])+' '+str(objAuditData['tipoMovimiento'])+' del inversor '+ str(objAuditData['nombre'])+' de identificacion '+str(objAuditData['identificacion'])+' con fecha limite de '+str(objAuditData['fechaLimite'])+' por un monto de ' +str(objAuditData['monto'])+ ' a los siguientes datos ' + str(objAuditData['email']) +' '+ str(objAuditData['metodo_desembolso']) , '')
-        audit.AddAudit(auditory)
+        if "usuario_id" in session:  
+            dataColl = finalizarTicketModulo()    
+            objAuditData=finalizarTicketModuloAudit()
+            print(objAuditData['monto'])
+            auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Ticket finalizado', 'Se dio por finalizado el ticket '+str(objAuditData['historicoMovimientoId'])+' '+str(objAuditData['tipoMovimiento'])+' del inversor '+ str(objAuditData['nombre'])+' de identificacion '+str(objAuditData['identificacion'])+' con fecha limite de '+str(objAuditData['fechaLimite'])+' por un monto de ' +str(objAuditData['monto'])+ ' a los siguientes datos ' + str(objAuditData['email']) +' '+ str(objAuditData['metodo_desembolso']) , '')
+            audit.AddAudit(auditory)
 
-        return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')
+            return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -164,7 +188,9 @@ def finalizarTicket():
 @app.route('/auditoria')
 def auditoria():
     try:
-        return render_template('auditoria.html')
+        if "usuario_id" in session:  
+            return render_template('auditoria.html')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -172,12 +198,13 @@ def auditoria():
 @app.route('/auditoriaTabla', methods=["GET", "POST"])
 def auditoriaTabla():
     try:
-        
-        dataColl = auditoriaTablaModule()
-        recordsTotal=dataColl[0]
-        recordsFiltered=dataColl[0]
-        dataColl.remove(recordsTotal) 
-        return Response(json.dumps({ 'data' : dataColl,'recordsTotal':recordsTotal,'recordsFiltered':recordsFiltered }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = auditoriaTablaModule()
+            recordsTotal=dataColl[0]
+            recordsFiltered=dataColl[0]
+            dataColl.remove(recordsTotal) 
+            return Response(json.dumps({ 'data' : dataColl,'recordsTotal':recordsTotal,'recordsFiltered':recordsFiltered }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -187,15 +214,19 @@ def auditoriaTabla():
 @app.route('/crearInversores')
 def crearInversores():
     try:
-        return render_template('crearInversores.html')
+        if "usuario_id" in session:  
+            return render_template('crearInversores.html')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
 @app.route('/crearInversor', methods=["GET", "POST"])
 def crearInversor():
     try:
-        objData = crearInversorModule()
-        return Response(json.dumps({ 'data' : objData }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = crearInversorModule()
+            return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -203,7 +234,9 @@ def crearInversor():
 @app.route('/editarInversores', methods=["GET", "POST"])
 def editarInversores():
     try:
-        return render_template('crearInversores.html')
+        if "usuario_id" in session:  
+            return render_template('crearInversores.html')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -211,18 +244,22 @@ def editarInversores():
 @app.route('/administrarInversores', methods=["GET", "POST"])
 def administrarInversores():
     try:
-        return render_template('administrarInversores.html')
+        if "usuario_id" in session:  
+            return render_template('administrarInversores.html')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
 @app.route('/administrarInversoresTabla', methods=["GET", "POST"])
 def administrarInversoresTabla():
     try:
-        dataColl = administrarInversorTablaModulo()
-        recordsTotal=dataColl[0]
-        recordsFiltered=dataColl[0]
-        dataColl.remove(recordsTotal) 
-        return Response(json.dumps({ 'data': dataColl,'recordsTotal':recordsTotal,'recordsFiltered':recordsFiltered }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = administrarInversorTablaModulo()
+            recordsTotal=dataColl[0]
+            recordsFiltered=dataColl[0]
+            dataColl.remove(recordsTotal) 
+            return Response(json.dumps({ 'data': dataColl,'recordsTotal':recordsTotal,'recordsFiltered':recordsFiltered }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -230,10 +267,12 @@ def administrarInversoresTabla():
 @app.route('/agregarCapital', methods=["GET", "POST"])
 def agregarCapital():
     try:
-        usuario  = request.form['usuario']  
-        capital  = request.form['capital']
-        dataColl = agregarCapitalModule(usuario,capital)
-        return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            usuario  = request.form['usuario']  
+            capital  = request.form['capital']
+            dataColl = agregarCapitalModule(usuario,capital)
+            return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -241,15 +280,19 @@ def agregarCapital():
 @app.route('/crearAdministrativos')
 def crearAdministrativos():
     try:
-        return render_template('crearAdministrativos.html')
+        if "usuario_id" in session:  
+            return render_template('crearAdministrativos.html')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
 @app.route('/crearAdministrador', methods=["GET", "POST"])
 def crearAdministrador():
     try:
-        objData = crearAdministradorModule()
-        return Response(json.dumps({ 'data' : objData }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = crearAdministradorModule()
+            return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -257,8 +300,10 @@ def crearAdministrador():
 @app.route('/editarAdministrador', methods=["GET", "POST"])
 def editarAdministrador():
     try:
-        objData = editarAdministradorModule()
-        return Response(json.dumps({ 'data' : objData }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = editarAdministradorModule()
+            return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -266,7 +311,9 @@ def editarAdministrador():
 @app.route('/administrarAdministrativos')
 def administrarAdministrativos():
     try:
-        return render_template('administrarAdministrativos.html')
+        if "usuario_id" in session:  
+            return render_template('administrarAdministrativos.html')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -274,8 +321,10 @@ def administrarAdministrativos():
 @app.route('/administrarAdministrativosTabla', methods=["GET", "POST"])
 def administrarAdministrativosTabla():
     try:
-        dataColl = administrarAdministrativosTablaModulo()
-        return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = administrarAdministrativosTablaModulo()
+            return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
@@ -285,30 +334,38 @@ def administrarAdministrativosTabla():
 @app.route('/historicos')
 def historicos():
     try:
-        return render_template('historicos.html')
+        if "usuario_id" in session:  
+            return render_template('historicos.html')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
 @app.route('/historicosTabla', methods=["GET", "POST"])
 def historicosTabla():
     try:
-        dataColl = indicadores()
-        Response(json.dumps({ 'data':dataColl}), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = indicadores()
+            Response(json.dumps({ 'data':dataColl}), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
 @app.route('/indicadoresHistoricos')
 def indicadoresHistoricos():
     try:
-        dataColl = indicadores()
-        Response(json.dumps({ 'data':dataColl}), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = indicadores()
+            Response(json.dumps({ 'data':dataColl}), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
 @app.route('/cambiarContrasena')
 def cambiarContrasena():
     try:
-        return render_template('cambiarContrasena.html')
+        if "usuario_id" in session:  
+            return render_template('cambiarContrasena.html')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 #--------------------------------
@@ -316,8 +373,10 @@ def cambiarContrasena():
 @app.route('/cambiarContrasenaLogica', methods=["GET", "POST"])
 def cambiarContrasenaLogica():
     try:
-        dataColl = cambiarContrasenaModulo()
-        return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
+        if "usuario_id" in session:  
+            dataColl = cambiarContrasenaModulo()
+            return Response(json.dumps({ 'data': dataColl }), status=200, mimetype='application/json')
+        return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
