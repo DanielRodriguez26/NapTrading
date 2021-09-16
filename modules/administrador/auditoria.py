@@ -19,6 +19,7 @@ mydb= MySQLdb.connect(
 def auditoriaTablaModule():
     if request.method == "POST":
         desde= int(request.values.get('start'))
+        search = request.values.get('search[value]')
         cur = mydb.cursor()
         objData= collections.OrderedDict()
 

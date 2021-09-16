@@ -3,17 +3,34 @@ $(document).ready(()=>{
 })
 
 function registarEventos() {
+    $(`#historicos,
+    #homeInversor,
+    #auditoria,
+    #crearInversores,
+    #administrarInversores,
+    #crearAdministrativos,
+    #solicitudes,
+    #administrarAdministrativos,
+    #cambiarContrasena,
+    #administradores,
+    #inversores`).hide();
+
+    cargarLinksPermitidos()
     cargarIndicadores()
-    cargarLinksSolicitudes()
-    cargarLinksHistorico()
-    cargarLinksHomeInversor()
-    cargarLinksAuditoria()
-    cargarLinksCrearInversores()
-    cargarLinksAdministrarInversores()
-    cargarLinksCrearAdministrativos()
-    cargarLinksAdministrarAdministrativos()
-    cargarLinksCambiarContrasena()
+    cargarLinks()
+
 }
+
+function cargarLinksPermitidos() {
+    $.ajax({
+        url: '/permisos',
+        type: 'GET',
+        success: function (responseJson, status, statusCode) { cargarLinksPermitidosSuccess(responseJson, statusCode.status); },
+        error: function (jqXHR, textStatus, errorThrown) { errorConsultandoAPI(jqXHR, textStatus, errorThrown); }
+    });
+}
+
+
 
 function cargarIndicadores() {
     $.ajax({
@@ -24,56 +41,64 @@ function cargarIndicadores() {
     });
 }
 
+function cargarLinksPermitidosSuccess(data){
+    
+    if (data.data == '1') {
+        $(`#historicos,
+        #homeInversor,
+        #auditoria,
+        #crearInversores,
+        #administrarInversores,
+        #crearAdministrativos,
+        #solicitudes,
+        #administrarAdministrativos,
+        #cambiarContrasena,
+        #administradores,
+        #inversores`).show()
+    }else if (data.data == '2') {
+        $('#cambiarContrasena').show();
+        
+    }
+}
 function cargarIndicadoresSuccess(data) {
     
     $('#contenido').html(data.data);
 }
 
 // Se cargan links del menú
-function cargarLinksHistorico() {
+function cargarLinks() {
     $('#historicos').click( function () {
         $('#contenido').load('historicos');
     });
-}
-function cargarLinksHomeInversor() {
+
     $('#homeInversor').click( function () {
         cargarIndicadores()
     });
-}
-function cargarLinksAuditoria() {
+
     $('#auditoria').click( function () {
         $('#contenido').load('auditoria');
     });
-}
-function cargarLinksCrearInversores() {
+
     $('#crearInversores').click( function () {
         $('#contenido').load('crearInversores');
     });
-}
-function cargarLinksAdministrarInversores() {
+
     $('#administrarInversores').click( function () {
         $('#contenido').load('administrarInversores');
     });
-}
 
-function cargarLinksCrearAdministrativos() {
     $('#crearAdministrativos').click( function () {
         $('#contenido').load('crearAdministrativos');
     });
-}
-function cargarLinksAdministrarAdministrativos() {
+
     $('#administrarAdministrativos').click( function () {
         $('#contenido').load('administrarAdministrativos');
     });
-}
 
-function cargarLinksSolicitudes() {
     $('#solicitudes').click( function () {
        $('#contenido').load('solicitudes');
     });
-}
 
-function cargarLinksCambiarContrasena() {
     $('#cambiarContrasena').click( function () {
         $('#contenido').load('cambiarContrasena');
     });
