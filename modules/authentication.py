@@ -1,9 +1,11 @@
-from flask import request,render_template,url_for, session
+from flask import request,render_template,url_for
 from flask_mysqldb import  MySQLdb
+from flask import session
 import datetime
 import modules.customhash as customhash
 import modules.globalvariables as gb
 import collections
+
 
 
 globalvariables = gb.GlobalVariables(True)
@@ -44,8 +46,7 @@ def authenticate(id, contra):
         usuario_id = user["usuario_id"]
         rol = str(user["rol"])
         
-        if contrasena == hashedPass and username == id:
-            
+        if contrasena == hashedPass and username == id:           
             #Se valida el Rol
             if rol == '2':
                 cur = mydb.cursor()
@@ -135,3 +136,13 @@ def authenticate(id, contra):
             response['url'] = '/'
             response['redirect'] = False
             return response
+
+def permisosModules():
+    id = session["usuario_id"]
+    cur = mydb.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute(" SELECT * FROM usuarios WHERE usuario_id = %s", (id,))
+    user = cur.fetchone()
+    cur.close()
+    response= collections.OrderedDict()
+    response = str(user["rol"])
+    return response
