@@ -76,6 +76,7 @@ def clearSession():
 @app.route('/')
 def login():
     try:
+        clearSession()
         return render_template('login.html')
     except Exception as error:
         logger.exception(error)

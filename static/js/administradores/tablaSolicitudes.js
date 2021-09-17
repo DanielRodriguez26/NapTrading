@@ -37,8 +37,8 @@ function cargarSolicitudesTablaSuccess() {
     $('#tbltableSolicitudes').empty().append(`
     <table class="table table-striped" id="tableSolicitud">`);
     //deleting operators to reset
-    
-    $tblSolicitudes = $('#tableSolicitud').DataTable({
+    debugger
+    var tblSolicitudes = $('#tableSolicitud').DataTable({
         responsive: true,
         searching: false,
         language: espanol,
@@ -139,6 +139,7 @@ function cargarSolicitudesTablaSuccess() {
                 });
             });
             $('.finalizar-ticket').click((e) => {  
+
                 debugger              
                 let movimiento_id = e.currentTarget.getAttribute('data-id');
                 finalizarTicket(movimiento_id)

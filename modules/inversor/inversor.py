@@ -140,11 +140,21 @@ def agregarCapitalModule(usuario_id,capital):
                         INNER JOIN inversores i on i.usuario_id = u.usuario_id
                         WHERE u.usuario_id =%s''', (usuario_id,))
         data = cur.fetchone()
-
-        catidadHis= int(data[0])
-
-        capitalSum = int(capital)+catidadHis
-        email = data[1]
+        if data[0] is None:
+            cur.execute(''' SELECT
+                        i.email
+                        FROM usuarios u
+                        INNER JOIN inversores i on i.usuario_id = u.usuario_id
+                        WHERE u.usuario_id =%s''', (usuario_id,))
+            data = cur.fetchone()
+            capitalSum = int(capital)
+            email = data[0]
+            
+        else:
+            catidadHis= int(data[0])
+            capitalSum = int(capital)+catidadHis
+            email = data[1]
+            
 
         cur.execute(''' INSERT INTO historicomovimientos
                         (usuario_id,fecha,
