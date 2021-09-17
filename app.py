@@ -27,7 +27,6 @@ from modules.cambiarContrasena import cambiarContrasenaModulo
 from modules.administrador.solicitudes import finalizarTicketModulo, finalizarTicketModuloAudit, solicitudesTablaModulo
 from modules.administrador.auditoria import auditoriaTablaModule
 
-
 app = Flask(__name__)
 
 mydb = None
@@ -223,10 +222,11 @@ def crearInversores():
 @app.route('/crearInversor', methods=["GET", "POST"])
 def crearInversor():
     try:
+
         if "usuario_id" in session:  
-            dataColl = crearInversorModule()
-            return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')
-        return render_template("403.html")
+            auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Crear Inversor', 'Se creo el inversor con los siguientes datos: Nombre '+ str(objData['auditNombre'])+', Apellidos '+str(objData['auditApellido'])+', email '+str(objData['auditEmail'])+',  identificación: '+ str(objData['auditIdentificacion'])+', capital:'+ str(objData['auditCapital']), '')
+            audit.AddAudit(auditory)
+        return render_template("403.html"
     except Exception as error:
         logger.exception(error)
 
@@ -301,9 +301,12 @@ def crearAdministrador():
 def editarAdministrador():
     try:
         if "usuario_id" in session:  
-            dataColl = editarAdministradorModule()
-            return Response(json.dumps({ 'data' : dataColl }), status=200, mimetype='application/json')
+            objData = editarAdministradorModule()
+                               
+            auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Cambiar contraseña', 'Se cambio la contraseña del usuario '+ str(objData['usuarioAudit']) , '')
+            audit.AddAudit(auditory)
         return render_template("403.html")
+                               
     except Exception as error:
         logger.exception(error)
 
