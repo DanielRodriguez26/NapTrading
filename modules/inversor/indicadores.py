@@ -28,7 +28,7 @@ def indicadoresUrlModulo():
     username = user["username"]
     rol = str(user["rol"])
 
-    if rol == '1':
+    if rol == '2':
         cur = mydb.cursor()
         cur.execute(" SELECT * FROM administrativos WHERE usuario_id = %s", (id,))
     else:

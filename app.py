@@ -19,7 +19,6 @@ import modules.customhash as customhash
 from modules.inversor.indicadores import indicadoresModule ,indicadoresUrlModulo
 from modules.login import loginVerifyModule
 from modules.administrador.administrador import crearAdministradorModule,editarAdministradorModule,administrarAdministrativosTablaModulo
-from modules.administrador.solicitudes import solicitudesTablaModulo,finalizarTicketModulo,finalizarTicketModuloAudit
 from modules.inversor.inversor import crearInversorModule,editarInversorModule,administrarInversorTablaModulo,agregarCapitalModule
 from modules.historicos import historicosTablaModulo,indicadoresHistoricosModulo
 from modules.cambiarContrasena import cambiarContrasenaModulo
@@ -152,7 +151,7 @@ def finalizarTicket():
     try:
         dataColl = finalizarTicketModulo()    
         objAuditData=finalizarTicketModuloAudit()
-        print(objAuditData['monto'])
+ 
         auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Ticket finalizado', 'Se dio por finalizado el ticket '+str(objAuditData['historicoMovimientoId'])+' '+str(objAuditData['tipoMovimiento'])+' del inversor '+ str(objAuditData['nombre'])+' de identificacion '+str(objAuditData['identificacion'])+' con fecha limite de '+str(objAuditData['fechaLimite'])+' por un monto de ' +str(objAuditData['monto'])+ ' a los siguientes datos ' + str(objAuditData['email']) +' '+ str(objAuditData['metodo_desembolso']) , '')
         audit.AddAudit(auditory)
 
@@ -195,6 +194,9 @@ def crearInversores():
 def crearInversor():
     try:
         objData = crearInversorModule()
+
+        auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Crear Inversor', 'Se creo el inversor con los siguientes datos: Nombre '+ str(objData['auditNombre'])+', Apellidos '+str(objData['auditApellido'])+', email '+str(objData['auditEmail'])+',  identificación: '+ str(objData['auditIdentificacion'])+', capital:'+ str(objData['auditCapital']), '')
+        audit.AddAudit(auditory)
         return Response(json.dumps({ 'data' : objData }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)
@@ -258,6 +260,10 @@ def crearAdministrador():
 def editarAdministrador():
     try:
         objData = editarAdministradorModule()
+
+        auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Cambiar contraseña', 'Se cambio la contraseña del usuario '+ str(objData['usuarioAudit']) , '')
+        audit.AddAudit(auditory)
+
         return Response(json.dumps({ 'data' : objData }), status=200, mimetype='application/json')
     except Exception as error:
         logger.exception(error)

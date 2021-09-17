@@ -82,19 +82,42 @@ def editarAdministradorModule():
         cur.execute('''SELECT username FROM usuarios WHERE usuario_id = %s;''',(usuario,))
         data = cur.fetchall()
         username = data[0]
-        
-        objData= collections.OrderedDict()
+
+        #Se reinician los intentos y el bloqueo-------
         cur.execute(''' UPDATE usuarios 
                         SET contrasenia = %s 
                         WHERE usuario_id = %s;''',
-                    (contrase,usuario))
-        mydb.commit()
-        cur.close()
+                    (contrase,usuario))  
+        cur.execute(''' UPDATE usuarios 
+                            SET bloqueo_intentos = 0,
+                            usuario_bloqueado= 0
+                            WHERE usuario_id = %s;''',
+                        (usuario,))     
+                                           
+        mydb.commit() 
 
+        #-------Información Auditoria-----------------
+        
+        cur.execute('''SELECT rol FROM usuarios WHERE usuario_id = %s;''',(usuario,))
+        dataRol= cur.fetchone()
+        if dataRol[0] == 1:
+            cur.execute('''SELECT identificacion FROM inversores WHERE usuario_id = %s;''',(usuario,))
+            auditData= cur.fetchone()
+
+        else:
+            cur.execute('''SELECT identificacion FROM administrativos WHERE usuario_id = %s;''',(usuario,))
+            auditData= cur.fetchone()
+
+        auditData=str(auditData[0])
+
+        cur.close()
+        
+        objData= collections.OrderedDict()
         objData['contra']= contra
         objData['url']= '/home'
         objData['redirect']= True
         objData['username']= username
+        objData['usuarioAudit']=auditData 
 
         return objData
 
