@@ -38,25 +38,45 @@ def authenticate(id, contra):
    
     response= collections.OrderedDict()
     
-    if user != None:
-        
+    if user != None:       
 
         hashedPass = customhash.hash(contra)
         contrasena = user["contrasenia"]
         username = user["username"]
-        if contrasena == hashedPass and username == id:
-
-            
-            usuario_id = user["usuario_id"]
-            session["usuario_id"] = usuario_id
-            rol = str(user["rol"])
-            if rol == '1':
+        usuario_id = user["usuario_id"]
+        rol = str(user["rol"])
+        
+        if contrasena == hashedPass and username == id:           
+            #Se valida el Rol
+            if rol == '2':
                 cur = mydb.cursor()
                 cur.execute(" SELECT * FROM administrativos WHERE usuario_id = %s", (usuario_id,))
+                data = cur.fetchone()
+
             else:
                 cur = mydb.cursor()
-                cur.execute(" SELECT * FROM inversores WHERE usuario_id = %s", (usuario_id,))
-            data = cur.fetchone()
+                cur.execute(" SELECT usuario_bloqueado FROM usuarios WHERE usuario_id = %s", (usuario_id,))
+                data = cur.fetchone()
+
+                #Se valida si el inversor está bloqueado
+                if data[0] == 1:
+                    response['url'] = '/'
+                    response['redirect'] = False
+                    response['bloqueo'] = True
+                    response['text']="El usuario se encuentra bloqueado por intentos fallidos, por favor comuniquese con un adminstrador"
+
+                    return response
+
+                else:
+                    cur.execute(''' UPDATE usuarios 
+                            SET bloqueo_intentos = 0
+                            WHERE usuario_id = %s;''',
+                        (usuario_id,))                        
+                    mydb.commit()        
+                          
+                    cur.execute(" SELECT * FROM inversores WHERE usuario_id = %s", (usuario_id,))
+                    data = cur.fetchone()
+                
 
             nombre = data[3] + ' ' + data[4]
 
@@ -66,9 +86,51 @@ def authenticate(id, contra):
             response['nombre'] = nombre
             response['redirect'] = True
             return response
+           
         else:
+            usuario_id = user["usuario_id"]
+
+            if rol == '1':
+
+                cur = mydb.cursor()
+                cur.execute(" SELECT usuario_bloqueado FROM usuarios WHERE usuario_id = %s", (usuario_id,))
+                data = cur.fetchone()
+
+                #Se valida si el usuario está bloqueado
+                if data[0] == 1:
+                    response['url'] = '/'
+                    response['redirect'] = False
+                    response['bloqueo'] = True
+                    response['text']="El usuario se encuentra bloqueado por intentos fallidos, por favor comuniquese con un adminstrador"
+
+                    return response
+
+                
+                cur.execute(" SELECT bloqueo_intentos FROM usuarios WHERE usuario_id = %s", (usuario_id,))
+                data = cur.fetchone()
+                intentos= data[0]
+
+                if intentos < 5:
+
+                    intentos=intentos+1
+
+                    cur.execute(''' UPDATE usuarios 
+                            SET bloqueo_intentos = %s
+                            WHERE usuario_id = %s;''',
+                        (intentos,usuario_id))                        
+                    mydb.commit()                    
+                
+                else:
+                    cur.execute(''' UPDATE usuarios 
+                            SET usuario_bloqueado = 1
+                            WHERE usuario_id = %s;''',
+                        (usuario_id,))
+                    mydb.commit()
+                
+            cur.close()
             response['url'] = '/'
             response['redirect'] = False
+
             return response
     else:
             response['url'] = '/'

@@ -59,6 +59,8 @@ def crearInversorModule():
 
         cur.execute('''INSERT INTO inversores (usuario_id, identificacion, nombres, apellidos,telefono,email,pais) VALUES (%s,%s,%s,%s,%s,%s,%s);
                     ''',(usuario_id,identificacion, nombre,apellidos,telefono ,email,pais))
+        
+
 
         mydb.commit()
         cur.close()
@@ -68,6 +70,12 @@ def crearInversorModule():
         objData['url']= '/home'
         objData['redirect']= True
         objData['username']= username
+        objData['auditNombre']=nombre
+        objData['auditApellidos']=apellidos
+        objData['auditIdentificacion']=identificacion
+        objData['auditEmail']=email
+        objData['auditTelefono']=telefono
+        objData['auditCapital']=capital
 
         return objData
 

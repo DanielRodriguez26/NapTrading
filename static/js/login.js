@@ -39,6 +39,12 @@ function cargarLoginVerifySuccess(responseJson) {
         }).then((result) => {
             window.location.href = data.url
         })
+    } else if(data.bloqueo) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Usuario Bloqueado',
+            text: data.text,
+        })
     } else {
         Swal.fire({
             icon: 'error',
