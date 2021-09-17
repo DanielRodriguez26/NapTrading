@@ -38,7 +38,6 @@ function cargarAuditoriaTablaSuccess() {
     <table class="table table-striped" id="tableAuditoria"></table>
 `);
     //deleting operators to reset
-    
     $tblAuditoria = $('#tableAuditoria').DataTable({
         responsive: true,
         language: espanol,

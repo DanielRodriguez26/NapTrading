@@ -23,7 +23,7 @@ def auditoriaTablaModule():
         cur = mydb.cursor()
         objData= collections.OrderedDict()
 
-        cur.execute(''' CALL  SP_CONSULTAR_AUDITORIAS(%s);''',(desde,))
+        cur.execute(''' CALL  SP_CONSULTAR_AUDITORIAS(%s,%s);''',(desde,search))
         data = cur.fetchall()
         dataColl = []
         if data:
