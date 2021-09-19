@@ -75,7 +75,8 @@ def finalizarTicketModuloAudit():
                         inner join siglasmovimientos as s on  s.siglas = h.tipo_movimiento
                         where h.historico_movimientos_id=%s; ''',
                         (movimientoID,))
-        auditdata = cur.fetchall()        
+        auditdata = cur.fetchall()   
+        cur.close()     
         auditDataColl = []
         if auditdata:
             for row in auditdata:

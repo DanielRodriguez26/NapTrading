@@ -73,7 +73,7 @@ def authenticate(id, contra):
                             WHERE usuario_id = %s;''',
                         (usuario_id,))                        
                     mydb.commit()        
-                          
+
                     cur.execute(" SELECT * FROM inversores WHERE usuario_id = %s", (usuario_id,))
                     data = cur.fetchone()
                 
@@ -86,7 +86,7 @@ def authenticate(id, contra):
             response['nombre'] = nombre
             response['redirect'] = True
             return response
-           
+
         else:
             usuario_id = user["usuario_id"]
 
@@ -138,7 +138,7 @@ def authenticate(id, contra):
             return response
 
 def permisosModules():
-    id = session["usuario_id"]
+    id = session["usuario"]
     cur = mydb.cursor(MySQLdb.cursors.DictCursor)
     cur.execute(" SELECT * FROM usuarios WHERE usuario_id = %s", (id,))
     user = cur.fetchone()

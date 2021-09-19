@@ -16,47 +16,50 @@ mydb= MySQLdb.connect(
 
 def historicosTablaModulo():
     desde= int(request.values.get('start'))
-    cur = mydb.connection.cursor()
-    cur.execute('''CALL SP_CONSULTAR_HISTORICOS(%s)''',(desde,))
+    cur = mydb.cursor()
+    cur.execute('''CALL SP_HISTORICOS(%s)''',(desde,))
     data = cur.fetchall()
+
+    cur.close()
     dataColl = []
+    
     if data:
-        objData= collections.OrderedDict()
+        recordsTotal =  data[0][8]
+        dataColl.append(recordsTotal)
         for row in data:
-            objData['nombre']= row[0]
-            objData['identificacion']= row[1]
-            objData['email']= int(row[2])
+            objData= collections.OrderedDict()
+            objData['nombre']= row[1] 
+            objData['identificacion']= row[2]
             objData['telefono']  = row[3]
             objData['capital']= row[4]
-            objData['ganancias']= row[4]
-            objData['totalRetiro']= row[4]
-            objData['totalReinvertido']= row[4]
-
-        objData['recordsFiltered']= data[0][8]
-        objData['recordsTotal'] =  data[0][8]
-
-        dataColl.append(objData)
+            objData['ganancias']= row[5]
+            objData['totalRetiro']= int(row[6])
+            objData['totalReinvertido']= row[7]
+            dataColl.append(objData)
     return dataColl
 
 def indicadoresHistoricosModulo():
-    cur = mydb.connection.cursor()
-    cur.execute('''SELECT * FROM historicomovimientos''')
-    data = cur.fetchall()
-    dataColl = []
-    if data:
-        objData= collections.OrderedDict()
-        for row in data:
-            objData['nombre']= row[0]
-            objData['identificacion']= row[1]
-            objData['email']= int(row[2])
-            objData['telefono']  = row[3]
-            objData['capital']= row[4]
-            objData['ganancias']= row[4]
-            objData['totalRetiro']= row[4]
-            objData['totalReinvertido']= row[4]
 
-        objData['recordsFiltered']= data[0][8]
-        objData['recordsTotal'] =  data[0][8]
+    cur = mydb.cursor()
+    cur.execute('''SELECT COUNT(1) FROM inversores''')
+    inversores = cur.fetchone()
+    
+    cur.execute('''SELECT IFNULL(SUM(monto),0) as invercion , COUNT(1) total FROM historicomovimientos WHERE tipo_movimiento in ('IC')''')
+    inversion = cur.fetchall()
 
-        dataColl.append(objData)
-    return dataColl
+    cur.execute('''SELECT IFNULL(SUM(monto),0) as invercion , COUNT(1) total FROM historicomovimientos WHERE tipo_movimiento in ('RG')''')
+    gananciasRetiradas = cur.fetchone()
+    cur.close()
+
+    inversionM=int(inversion[0][0])
+    inversionC=inversion[0][1]
+    promedioInversion= inversionM / inversionC
+
+
+    objData= collections.OrderedDict()
+    objData['inversores']= inversores
+    objData['inversion']= inversionM
+    objData['promedioInversion']  = int(promedioInversion)
+    objData['gananciasRetiradas']= int(gananciasRetiradas[0])
+
+    return objData
