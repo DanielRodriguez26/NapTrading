@@ -53,7 +53,7 @@ def crearInversorModule():
         contra = contra[0:5]
         contrase = customhash.hash(contra)
         
-        cur.execute('''INSERT INTO usuarios ( username, contrasenia, rol) VALUES (%s,%s,2);''',
+        cur.execute('''INSERT INTO usuarios ( username, contrasenia, rol) VALUES (%s,%s,1);''',
                     (username,contrase))
         usuario_id = cur.lastrowid
 
@@ -111,6 +111,7 @@ def administrarInversorTablaModulo():
 
         cur.execute('''CALL SP_CONSULTAR_INVERSORES(%s);''',(desde,))
         data = cur.fetchall()
+        cur.close()
         dataColl = []
         if data:
             recordsTotal =  data[0][7]
@@ -173,8 +174,32 @@ def agregarCapitalModule(usuario_id,capital):
                         disponibilidad) 
                         VALUES(%s,%s,NOW(),%s)''',(historico_id,capital,capitalSum))
         mydb.commit()
+
+
+        cur.execute('''SELECT rol FROM usuarios WHERE usuario_id = %s;''',(usuario_id,))
+        dataRol= cur.fetchone()
+        if dataRol[0] == 1:
+            cur.execute('''SELECT identificacion,nombres,apellidos,email FROM inversores WHERE usuario_id = %s;''',(usuario_id,))
+            auditData= cur.fetchone()
+
+        else:
+            cur.execute('''SELECT identificacion,nombre,apellido,email FROM administrativos WHERE usuario_id = %s;''',(usuario_id,))
+            auditData= cur.fetchone()
+
+        auditData=str(auditData[0])
+
         cur.close()
-        return True
+        
+        objData= collections.OrderedDict()
+
+
+        objData['redirect']= True
+        objData['auditNombre']=auditData[1]
+        objData['auditApellido']=auditData[2]
+        objData['auditIdentificacion']=auditData[0]
+        objData['auditEmail']=auditData[3] 
+        cur.close()
+        return objData
 
 
 

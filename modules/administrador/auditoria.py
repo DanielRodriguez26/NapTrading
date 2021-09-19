@@ -25,6 +25,7 @@ def auditoriaTablaModule():
 
         cur.execute(''' CALL  SP_CONSULTAR_AUDITORIAS(%s,%s);''',(desde,search))
         data = cur.fetchall()
+        cur.close()
         dataColl = []
         if data:
             recordsTotal =  data[0][6]

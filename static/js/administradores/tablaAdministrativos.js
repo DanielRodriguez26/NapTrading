@@ -134,7 +134,11 @@ function cargarAdministrativosTablaSuccess() {
             });
         }
     });
-    new $.fn.dataTable.FixedHeader( $tblOperadores );
+    $('#tableAdministrativos tbody').on('click', 'tr td  ul li span .cambiar-contrasena', function(e) { 
+        
+        let usuario_id = e.currentTarget.getAttribute('data-id');
+        cambiarContrasena(usuario_id)
+    })
 }
 
 function cambiarContrasena(usuario_id) {
