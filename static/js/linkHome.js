@@ -16,7 +16,7 @@ function registarEventos() {
     #inversores`).hide();
 
     cargarLinksPermitidos()
-    cargarIndicadores()
+    
     cargarLinks()
 
 }
@@ -55,10 +55,12 @@ function cargarLinksPermitidosSuccess(data){
         #administradores,
         #inversores`).show()
         $('#contenido').load('solicitudes');
+
+        
     }else if (data.data == '1') {
         $(`#cambiarContrasena,#homeInversor`).show();
         
-        
+        cargarIndicadores()
     }
 }
 function cargarIndicadoresSuccess(data) {

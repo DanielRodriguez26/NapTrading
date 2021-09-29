@@ -97,9 +97,9 @@ function cargarHistoricosTablaSuccess() {
 
         },
         {
-            title: "MONTO MAX. A PRESTAR",
+            title: "CAPITAL",
             'className': 'table-dibanka__column table-dibanka__column--bold table-dibanka__column--gray-bg',
-            "data-label": "MONTO MAX. A PRESTAR",
+            "data-label": "CAPITAL",
             "data": "capital",
             "orderable": true,
             "render": function (capital, type, row) {

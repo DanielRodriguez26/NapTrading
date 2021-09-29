@@ -98,7 +98,7 @@ def editarAdministradorModule():
 
         cur.execute('''SELECT username FROM usuarios WHERE usuario_id = %s;''',(usuario,))
         data = cur.fetchall()
-        username = data[0]
+        username = data[0][0]
 
         #Se reinician los intentos y el bloqueo-------
         cur.execute(''' UPDATE usuarios 
@@ -116,7 +116,7 @@ def editarAdministradorModule():
         
         cur.execute('''SELECT rol FROM usuarios WHERE usuario_id = %s;''',(usuario,))
         dataRol= cur.fetchone()
-        if dataRol[0] == 2:
+        if dataRol[0] == 1:
             cur.execute('''SELECT identificacion FROM inversores WHERE usuario_id = %s;''',(usuario,))
             auditData= cur.fetchone()
 
@@ -125,13 +125,13 @@ def editarAdministradorModule():
             auditData= cur.fetchone()
 
         cur.close()
-        
+        usuarioAudit =auditData[0]
         objData= collections.OrderedDict()
         objData['contra']= contra
         objData['url']= '/home'
         objData['redirect']= True
         objData['username']= username
-        objData['usuarioAudit']=auditData[0]
+        objData['usuarioAudit']= usuarioAudit
 
         return objData
 

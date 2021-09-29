@@ -17,7 +17,7 @@ mydb= MySQLdb.connect(
 def historicosTablaModulo():
     desde= int(request.values.get('start'))
     cur = mydb.cursor()
-    cur.execute('''CALL SP_HISTORICOS(%s)''',(desde,))
+    cur.execute('''CALL SP_HISTORICOS(%s,1)''',(desde,))
     data = cur.fetchall()
 
     cur.close()
@@ -31,8 +31,8 @@ def historicosTablaModulo():
             objData['nombre']= row[1] 
             objData['identificacion']= row[2]
             objData['telefono']  = row[3]
-            objData['capital']= row[4]
-            objData['ganancias']= row[5]
+            objData['capital']= int(row[4])
+            objData['ganancias']= int(row[5])
             objData['totalRetiro']= int(row[6])
             objData['totalReinvertido']= row[7]
             dataColl.append(objData)
