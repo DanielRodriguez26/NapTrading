@@ -21,7 +21,7 @@ from modules.inversor.indicadores import indicadoresModule, indicadoresUrlModulo
 from modules.login import loginVerifyModule
 from modules.administrador.administrador import crearAdministradorModule, editarAdministradorModule, administrarAdministrativosTablaModulo
 from modules.inversor.inversor import crearInversorModule, editarInversorModule, administrarInversorTablaModulo, agregarCapitalModule
-from modules.historicos import historicosTablaModulo, indicadoresHistoricosModulo
+from modules.historicos import historicosTablaModulo, indicadoresHistoricosModulo,descargarExcelHistoricoModulo
 from modules.cambiarContrasena import cambiarContrasenaModulo
 from modules.administrador.solicitudes import finalizarTicketModulo, finalizarTicketModuloAudit, solicitudesTablaModulo
 from modules.administrador.auditoria import auditoriaTablaModule
@@ -315,7 +315,7 @@ def agregarCapital():
         if "usuario" in session:
             usuario_id = request.form['usuario']
             capital = request.form['capital']
-            dataColl = agregarCapitalModule(usuario_id,capital)
+            dataColl = agregarCapitalModule(usuario_id, capital)
             auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Crear Inversor', 'Se creo el inversor con los siguientes datos: Nombre ' + str(dataColl['auditNombre'])+', Apellidos '+str(
                 dataColl['auditApellido'])+', email '+str(dataColl['auditEmail'])+',  identificación: ' + str(dataColl['auditIdentificacion'])+', capital:' + str(dataColl['auditCapital']), '')
             audit.AddAudit(auditory)
@@ -410,6 +410,16 @@ def historicosTabla():
     except Exception as error:
         logger.exception(error)
 
+
+@app.route('/descargarExcelHistorico', methods=["GET", "POST"])
+def descargarExcelHistorico():
+    try:
+        if "usuario" in session:
+            dataColl = descargarExcelHistoricoModulo()
+            return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
+        return render_template("403.html")
+    except Exception as error:
+        logger.exception(error)
 
 @app.route('/indicadoresHistoricos')
 def indicadoresHistoricos():

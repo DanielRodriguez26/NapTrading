@@ -183,41 +183,4 @@ def agregarCapitalModule(usuario_id,capital):
         return objData
 
 
-'''def administrarInversorTablaExcelModulo():
-    if request.method == "POST":
-        desde= int(request.values.get('start'))
-        cur = mydb.cursor()
 
-        cur = mysqlPagaduria.cursor()
-        cur.execute(,(desde,))
-        data = cur.fetchall()
-        cur.close()
-        mysqlPagaduria.close()
-
-        output = io.BytesIO()
-        workbook = xlwt.Workbook()
-        sh = workbook.add_sheet('ProductoRetirados')
-        
-        #Headers
-        sh.write(0, 0, 'Nombre')
-        sh.write(0, 1, 'Apellidos')
-        sh.write(0, 2, 'Desprendible')
-        sh.write(0, 3, 'Fecha de Retiro')
-        sh.write(0, 4, 'Nombre funcionario que Retiró')
-        sh.write(0, 5, 'Código de Descuento')
-
-        idx = 0
-
-        for row in data:
-                sh.write(idx+1, 0, row[0])
-                sh.write(idx+1, 1, row[1])
-                sh.write(idx+1, 2, row[2])
-                sh.write(idx+1, 3, row[3])
-                sh.write(idx+1, 4, row[4])
-                sh.write(idx+1, 5, row[5])
-
-                idx += 1
-        idXls = uuid.uuid1()
-        workbook.save("static/temp/DescuentosProductoRetiradosDibanka"+ str(idXls) +".xls")
-        
-        return Response(json.dumps({'url':"/static/temp/Inversores"+ str(idXls) +".xls"}),  mimetype='application/json')'''
