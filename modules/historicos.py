@@ -1,9 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, g, make_response, session, escape, Response,json
+from datetime import date
+from datetime import datetime
 import MySQLdb
 from werkzeug.utils import secure_filename
 import modules.authentication as authentication
 import modules.globalvariables as gb
 import collections
+import xlwt
+import io
 
 
 globalvariables = gb.GlobalVariables(True)
@@ -17,7 +21,7 @@ mydb= MySQLdb.connect(
 def historicosTablaModulo():
     desde= int(request.values.get('start'))
     cur = mydb.cursor()
-    cur.execute('''CALL SP_HISTORICOS(%s)''',(desde,))
+    cur.execute('''CALL SP_HISTORICOS(%s,1)''',(desde,))
     data = cur.fetchall()
 
     cur.close()
@@ -31,8 +35,8 @@ def historicosTablaModulo():
             objData['nombre']= row[1] 
             objData['identificacion']= row[2]
             objData['telefono']  = row[3]
-            objData['capital']= row[4]
-            objData['ganancias']= row[5]
+            objData['capital']= int(row[4])
+            objData['ganancias']= int(row[5])
             objData['totalRetiro']= int(row[6])
             objData['totalReinvertido']= row[7]
             dataColl.append(objData)
@@ -63,3 +67,46 @@ def indicadoresHistoricosModulo():
     objData['gananciasRetiradas']= int(gananciasRetiradas[0])
 
     return objData
+
+
+def descargarExcelHistoricoModulo():
+    if request.method == "GET":
+        cur = mydb.cursor()
+        cur.execute('''CALL SP_HISTORICOS(0,0)''',)
+        data = cur.fetchall()
+
+
+        output = io.BytesIO()
+        workbook = xlwt.Workbook()
+        sh = workbook.add_sheet('Historico')
+        
+        #Headers
+        sh.write(0, 0, 'Nombre')
+        sh.write(0, 1, 'Identificacion')
+        sh.write(0, 2, 'Telefono')
+        sh.write(0, 3, 'Capital')
+        sh.write(0, 4, 'Ganancias')
+        sh.write(0, 5, 'Total Retiro')
+        sh.write(0, 6, 'Total Reinvertido')
+
+        idx = 0
+
+        for row in data:
+            sh.write(idx+1, 0, row[1])
+            sh.write(idx+1, 1, row[2])
+            sh.write(idx+1, 2, int(row[3]))
+            sh.write(idx+1, 3, int(row[4]))
+            sh.write(idx+1, 4, int(row[5]))
+            sh.write(idx+1, 5, int(row[6]))
+            sh.write(idx+1, 6, int(row[7]))
+
+            idx += 1
+        idXls = str(datetime.now())
+        idXls = idXls.split('.')[0]
+        idXls =idXls.replace(':','_')
+        idXls =idXls.replace('-','_')
+        idXls =idXls.replace(' ','_')
+        workbook.save("static/temp/Historicos"+ str(idXls) +".xls")
+
+        url = "/static/temp/Historicos"+ str(idXls) +".xls"
+        return  url
