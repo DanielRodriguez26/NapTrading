@@ -42,7 +42,7 @@ function cargarIndicadoresHistoricos(params) {
     });
 }
 function cargarIndicadoresHistoricosSuccess(responseJson) {
-    debugger
+    
     data = responseJson.data
     var inversores= data.inversores
     var inversion = formatCurrency(data.inversion)

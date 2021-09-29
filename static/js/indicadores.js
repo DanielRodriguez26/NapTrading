@@ -77,7 +77,7 @@ function formatCurrency(value) {
 
 
 function retiroganacias(url){
-    debugger
+    
     var data = new FormData();
     data.append('emailRetiro' , $("#emailRetiro").val());
     data.append('metodoRetiro' ,  $('#metodoRetiro').val());

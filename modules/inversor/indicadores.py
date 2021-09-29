@@ -112,8 +112,9 @@ def retiroganaciasModulo():
 
     cur.execute(
         '''SELECT TIMESTAMPDIFF(DAY, %s, NOW()) AS dias_transcurridos;''', (fecha_inicio_pool,))
-    diasTotal = cur.fetchall()
+    diasTotal = cur.fetchone()
 
+    diasTotal = diasTotal[0]
     diasFaltantes = 30 - diasTotal
 
     if diasTotal > 30:
@@ -129,7 +130,7 @@ def retiroganaciasModulo():
             mydb.commit()
             cur.close()
 
-            objData['mensaje'] = 'Holaaa'
+            objData['mensaje'] = 'En 3 dias te daran una respuesta de tu retiro'
             objData['url'] = '/home'
             objData['redirect'] = True
 
@@ -140,7 +141,7 @@ def retiroganaciasModulo():
             cur.close()
             return objData
     else:
-        objData['mensaje'] = 'Actualmente no es posible hacer un retido sus ganancias ya que hace falta ' + diasFaltantes+' dias '
+        objData['mensaje'] = 'Actualmente no es posible hacer un retido sus ganancias ya que hace falta ' + str(diasFaltantes)+' dias '
         objData['redirect'] = False
         cur.close()
         return objData
@@ -169,9 +170,9 @@ def retiroCapitalModulo():
             fechaRetiro = str(fechaRetiro)
             cur.execute(
                 '''SELECT TIMESTAMPDIFF(DAY, %s, NOW()) AS dias_transcurridos;''', (fechaRetiro,))
-            diasTotal = cur.fetchall()
+            diasTotal = cur.fetchone()
 
-            diasFaltantes = 180 - diasTotal
+            diasFaltantes = 180 - diasTotal[0]
             if diasTotal > 180:
                 if montoXCapital >= gananciaRetiro:
 
@@ -189,7 +190,8 @@ def retiroCapitalModulo():
                     mydb.commit()
                     cur.close()
 
-                    objData['mensaje'] = 'Holaaa'
+                    objData['mensaje'] = 'En 3 dias te daran una respuesta de tu retiro'
+                    objData['url'] = '/home'
                     objData['redirect'] = True
 
                     return objData

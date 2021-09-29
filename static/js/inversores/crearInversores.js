@@ -37,7 +37,7 @@ function creaInversor() {
 
 
 function creaInversorSuccess(responseJson) {
-    debugger
+    
     var data = responseJson.data
     username = data.username
     contra = data.contra
