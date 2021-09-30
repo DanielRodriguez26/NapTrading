@@ -18,6 +18,7 @@ def cambiarContrasenaModulo():
         confirmarContrasena = request.form['confirmarContrasena']
         usuario = session['usuario']
 
+        nuevaContrasena = customhash.hash(nuevaContrasena)
         contrasenaForm = customhash.hash(contrasena)
         mydb = ConnectDataBase()
         cur = mydb.cursor()
