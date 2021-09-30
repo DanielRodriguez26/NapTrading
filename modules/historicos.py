@@ -45,12 +45,16 @@ def historicosTablaModulo():
 def indicadoresHistoricosModulo():
 
     cur = mydb.cursor()
-    cur.execute('''SELECT COUNT(1) FROM inversores''')
+    cur.execute('''SELECT COUNT(inversor_id) FROM inversores;''')
     inversores = cur.fetchone()
+    cur.close()
     
+    cur = mydb.cursor()
     cur.execute('''SELECT IFNULL(SUM(monto),0) as invercion , COUNT(1) total FROM historicomovimientos WHERE tipo_movimiento in ('IC')''')
     inversion = cur.fetchall()
+    cur.close()
 
+    cur = mydb.cursor()
     cur.execute('''SELECT IFNULL(SUM(monto),0) as invercion , COUNT(1) total FROM historicomovimientos WHERE tipo_movimiento in ('RG')''')
     gananciasRetiradas = cur.fetchone()
     cur.close()
