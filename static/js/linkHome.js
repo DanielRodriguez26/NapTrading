@@ -13,7 +13,7 @@ function registarEventos() {
     #administrarAdministrativos,
     #cambiarContrasena,
     #administradores,
-    #inversores`).hide();
+    #inversores,#whatsapp`).hide();
 
     cargarLinksPermitidos()
     
@@ -53,12 +53,14 @@ function cargarLinksPermitidosSuccess(data){
         #administrarAdministrativos,
         #cambiarContrasena,
         #administradores,
-        #inversores`).show()
+        #inversores,
+        #whatsapp`).show()
         $('#contenido').load('solicitudes');
 
         
     }else if (data.data == '1') {
-        $(`#cambiarContrasena,#homeInversor`).show();
+        $(`#cambiarContrasena,#homeInversor,#whatsapp`).show();
+ 
         
         cargarIndicadores()
     }
