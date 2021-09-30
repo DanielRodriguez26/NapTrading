@@ -41,7 +41,7 @@ def indicadoresUrlModulo():
     totalInvertido = int(totalInvertidos["totalInvertido"])
     fechaIvertida = totalInvertidos["fecha"]
 
-    cur.execute("SELECT SUM(monto) as TotalRetiros FROM historicomovimientos WHERE tipo_movimiento in ('RG','RGC') AND usuario_id = %s", (id,))
+    cur.execute("SELECT ifnull(SUM(monto), 0) as TotalRetiros FROM historicomovimientos WHERE tipo_movimiento in ('RG','RC') AND usuario_id = %s", (id,))
     TotalRetiros = cur.fetchone()
     TotalRetiros = int(TotalRetiros["TotalRetiros"])
 

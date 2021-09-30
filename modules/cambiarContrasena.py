@@ -23,6 +23,7 @@ def cambiarContrasenaModulo():
         confirmarContrasena = request.form['confirmarContrasena']
         usuario = session['usuario']
 
+        nuevaContrasena = customhash.hash(nuevaContrasena)
         contrasenaForm = customhash.hash(contrasena)
         cur = mydb.cursor()
         cur.execute('''SELECT contrasenia FROM usuarios WHERE usuario_id = %s;''',(usuario,))
