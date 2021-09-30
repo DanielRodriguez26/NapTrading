@@ -53,7 +53,7 @@ function cargarIndicadoresHistoricos(params) {
 function cargarIndicadoresHistoricosSuccess(responseJson) {
 
     data = responseJson.data
-    debugger
+    
     var inversores = data.inversores
     var inversion = formatCurrency(data.inversion)
     var promedioInversion = formatCurrency(data.promedioInversion)
@@ -186,7 +186,7 @@ function formatCurrency(value) {
 }
 
 function descargarExcelHistoricoSuccess(responseJson) {
-    debugger
+    
     var url = window.location.origin + responseJson.data;
     var link = document.createElement('a');
     link.href = url;
