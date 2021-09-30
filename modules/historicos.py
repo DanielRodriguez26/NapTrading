@@ -1,30 +1,31 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, g, make_response, session, escape, Response,json
-from datetime import date
-from datetime import datetime
-import MySQLdb
+from modules.ConnectDataBase import ConnectDataBase
 from werkzeug.utils import secure_filename
+from datetime import datetime
+from datetime import date
+
+
 import modules.authentication as authentication
 import modules.globalvariables as gb
+import MySQLdb
 import collections
 import xlwt
 import io
 
 
-globalvariables = gb.GlobalVariables(True)
-mydb= MySQLdb.connect(
-    host=globalvariables.MysqlHost,
-    user=globalvariables.MysqlUser,
-    password=globalvariables.MysqlPassword,
-    database=globalvariables.MysqlDataBase)  
-
-
 def historicosTablaModulo():
+
+    mydb = ConnectDataBase()
+
     desde= int(request.values.get('start'))
     cur = mydb.cursor()
     cur.execute('''CALL SP_HISTORICOS(%s,1)''',(desde,))
     data = cur.fetchall()
 
     cur.close()
+    mydb.close()
+
+
     dataColl = []
     
     if data:
@@ -40,9 +41,12 @@ def historicosTablaModulo():
             objData['totalRetiro']= int(row[6])
             objData['totalReinvertido']= row[7]
             dataColl.append(objData)
+
+        
     return dataColl
 
 def indicadoresHistoricosModulo():
+    mydb = ConnectDataBase()
 
     cur = mydb.cursor()
     cur.execute('''SELECT COUNT(inversor_id) FROM inversores;''')
@@ -58,6 +62,7 @@ def indicadoresHistoricosModulo():
     cur.execute('''SELECT IFNULL(SUM(monto),0) as invercion , COUNT(1) total FROM historicomovimientos WHERE tipo_movimiento in ('RG')''')
     gananciasRetiradas = cur.fetchone()
     cur.close()
+    mydb.close()
 
     inversionM=int(inversion[0][0])
     inversionC=inversion[0][1]
@@ -75,6 +80,7 @@ def indicadoresHistoricosModulo():
 
 def descargarExcelHistoricoModulo():
     if request.method == "GET":
+        mydb = ConnectDataBase()
         cur = mydb.cursor()
         cur.execute('''CALL SP_HISTORICOS(0,0)''',)
         data = cur.fetchall()

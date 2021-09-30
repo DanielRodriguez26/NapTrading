@@ -53,6 +53,7 @@ function cargarIndicadoresHistoricos(params) {
 function cargarIndicadoresHistoricosSuccess(responseJson) {
 
     data = responseJson.data
+    debugger
     var inversores = data.inversores
     var inversion = formatCurrency(data.inversion)
     var promedioInversion = formatCurrency(data.promedioInversion)

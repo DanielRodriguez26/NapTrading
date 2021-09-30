@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, g, make_response, session, escape, Response, json
+from modules.ConnectDataBase import ConnectDataBase
 import MySQLdb
 from werkzeug.utils import secure_filename
 import modules.customhash as customhash
@@ -7,12 +8,7 @@ import modules.globalvariables as gb
 import uuid
 import collections
 
-globalvariables = gb.GlobalVariables(True)
-mydb = MySQLdb.connect(
-    host=globalvariables.MysqlHost,
-    user=globalvariables.MysqlUser,
-    password=globalvariables.MysqlPassword,
-    database=globalvariables.MysqlDataBase)
+
 
 
 def crearInversorModule():
@@ -25,13 +21,14 @@ def crearInversorModule():
         pais = request.form['pais']
         capital = request.form['capital']
 
+        mydb = ConnectDataBase()
         cur = mydb.cursor()
         objData = collections.OrderedDict()
 
         cur.execute('''SELECT identificacion, pais FROM inversores''')
         dataIn = cur.fetchall()
         for row in dataIn:
-            if identificacion == str(row[0] and pais == row[1]):
+            if identificacion == str(row[0]) and pais == row[1]:
                 objData['redirect'] = False
                 objData['mensaje'] = 'El numero de identificacion ya existe'
 
@@ -63,6 +60,7 @@ def crearInversorModule():
                     ''', (usuario_id, identificacion, nombre, apellidos, telefono, email, pais))
         mydb.commit()
         cur.close()
+        mydb.close()
 
         agregarCapitalModule(usuario_id,capital)
 
@@ -80,38 +78,16 @@ def crearInversorModule():
         return objData
 
 
-def editarInversorModule():
-    if request.method == "POST":
-        username = request.form['username']
-        contra = str(uuid.uuid1())
-        contra = contra[0:5]
-        contrase = customhash.hash(contra)
-
-        cur = mydb.cursor()
-        objData = collections.OrderedDict()
-        cur.execute(''' UPDATE usuarios 
-                        SET contrasenia = %s 
-                        WHERE usuario_id = %s;''',
-                    (contrase, username))
-        mydb.commit()
-        cur.close()
-
-        objData['contra'] = contra
-        objData['url'] = '/home'
-        objData['redirect'] = True
-        objData['username'] = username
-
-        return objData
-
-
 def administrarInversorTablaModulo():
     if request.method == "POST":
         desde = int(request.values.get('start'))
+        mydb = ConnectDataBase()
         cur = mydb.cursor()
 
         cur.execute('''CALL SP_CONSULTAR_INVERSORES(%s);''', (desde,))
         data = cur.fetchall()
         cur.close()
+        mydb.close()
         dataColl = []
         if data:
             recordsTotal = data[0][7]
@@ -130,6 +106,7 @@ def administrarInversorTablaModulo():
 
 def agregarCapitalModule(usuario_id,capital):
     if request.method == "POST":
+        mydb = ConnectDataBase()
         cur = mydb.cursor()
         email = None
 
@@ -160,7 +137,7 @@ def agregarCapitalModule(usuario_id,capital):
         historico_id = cur.lastrowid
         if monto is not None:
             
-            capitalSum = int(capital) + monto
+            capitalSum = int(capital) + monto[0]
             cur.execute(''' UPDATE capital  SET monto = %s , fecha = NOW() WHERE usuario_id = %s''',
                         (capitalSum, historico_id))
         else:
@@ -179,12 +156,15 @@ def agregarCapitalModule(usuario_id,capital):
         auditData = str(auditData[0])
 
         cur.close()
+        mydb.close()
 
         objData = collections.OrderedDict()
 
         objData['redirect'] = True
+        objData['url'] = '/home'
         objData['auditNombre'] = auditData[1]
         objData['auditApellido'] = auditData[2]
+        objData['auditCapital'] = capital
         objData['auditIdentificacion'] = auditData[0]
         objData['auditEmail'] = auditData[3]
         cur.close()

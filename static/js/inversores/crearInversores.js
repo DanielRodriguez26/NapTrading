@@ -8,6 +8,7 @@ function registarEventos() {
 
 function creaInversor() {
     $('#btnCrear').click( function () {
+        debugger
         var data = new FormData();
         data.append('nombre' , $("#nombre").val());
         data.append('apellidos' , $("#apellidos").val());
@@ -19,13 +20,14 @@ function creaInversor() {
 
 
         $.ajax({
+            url: '/crearInversor',
             data:data,
+            type: 'POST',
             cache: false,
             contentType: false,
             processData: false,
-            type: 'POST',
-            url: '/crearInversor',
             success: function (responseJson, status, statusCode) {
+                debugger
                 creaInversorSuccess(responseJson, statusCode.status);
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -37,7 +39,7 @@ function creaInversor() {
 
 
 function creaInversorSuccess(responseJson) {
-    
+    debugger
     var data = responseJson.data
     username = data.username
     contra = data.contra
