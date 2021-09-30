@@ -52,7 +52,7 @@ def crearAdministradorModule():
         contra = contra[0:5]
         contrase = customhash.hash(contra)
         
-        cur.execute('''INSERT INTO usuarios ( username, contrasenia, rol) VALUES (%s,%s,1);''',
+        cur.execute('''INSERT INTO usuarios ( username, contrasenia, rol) VALUES (%s,%s,2);''',
                     (username,contrase))
         usuario_id = cur.lastrowid
 
@@ -60,12 +60,29 @@ def crearAdministradorModule():
                     ''',(usuario_id,identificacion, nombre,apellidos,telefono ,email,pais))
 
         mydb.commit()
+
+        cur.execute('''SELECT rol FROM usuarios WHERE usuario_id = %s;''',(usuario_id,))
+        dataRol= cur.fetchone()
+        if dataRol[0] == 1:
+            cur.execute('''SELECT identificacion,nombres,apellidos,email FROM inversores WHERE usuario_id = %s;''',(usuario_id,))
+            auditData= cur.fetchone()
+
+        else:
+            cur.execute('''SELECT identificacion,nombre,apellido,email FROM administrativos WHERE usuario_id = %s;''',(usuario_id,))
+            auditData= cur.fetchone()
+
+        auditData=str(auditData[0])
+
         cur.close()
         
         objData['contra']= contra
         objData['url']= '/home'
         objData['redirect']= True
         objData['username']= username
+        objData['auditNombre']=auditData[1]
+        objData['auditApellido']=auditData[2]
+        objData['auditIdentificacion']=auditData[0]
+        objData['auditEmail']=auditData[3] 
 
         return objData
 
@@ -81,7 +98,7 @@ def editarAdministradorModule():
 
         cur.execute('''SELECT username FROM usuarios WHERE usuario_id = %s;''',(usuario,))
         data = cur.fetchall()
-        username = data[0]
+        username = data[0][0]
 
         #Se reinician los intentos y el bloqueo-------
         cur.execute(''' UPDATE usuarios 
@@ -92,8 +109,7 @@ def editarAdministradorModule():
                             SET bloqueo_intentos = 0,
                             usuario_bloqueado= 0
                             WHERE usuario_id = %s;''',
-                        (usuario,))     
-                                           
+                        (usuario,))
         mydb.commit() 
 
         #-------Información Auditoria-----------------
@@ -108,16 +124,14 @@ def editarAdministradorModule():
             cur.execute('''SELECT identificacion FROM administrativos WHERE usuario_id = %s;''',(usuario,))
             auditData= cur.fetchone()
 
-        auditData=str(auditData[0])
-
         cur.close()
-        
+        usuarioAudit =auditData[0]
         objData= collections.OrderedDict()
         objData['contra']= contra
         objData['url']= '/home'
         objData['redirect']= True
         objData['username']= username
-        objData['usuarioAudit']=auditData 
+        objData['usuarioAudit']= usuarioAudit
 
         return objData
 
@@ -128,6 +142,7 @@ def administrarAdministrativosTablaModulo():
 
         cur.execute('''SELECT * FROM administrativos''')
         data = cur.fetchall()
+        cur.close()
         dataColl = []
         if data:
             for row in data:

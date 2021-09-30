@@ -38,7 +38,7 @@ function cargarSolicitudesTablaSuccess() {
     <table class="table table-striped" id="tableSolicitud">`);
     //deleting operators to reset
     
-    $tblSolicitudes = $('#tableSolicitud').DataTable({
+    var tblSolicitudes = $('#tableSolicitud').DataTable({
         responsive: true,
         searching: false,
         language: espanol,
@@ -139,13 +139,16 @@ function cargarSolicitudesTablaSuccess() {
                 });
             });
             $('.finalizar-ticket').click((e) => {  
-                debugger              
                 let movimiento_id = e.currentTarget.getAttribute('data-id');
                 finalizarTicket(movimiento_id)
             });
             
         }
     });
+    $('#tableSolicitud tbody').on('click', 'tr td  ul li span .finalizar-ticket', function(e) { 
+        let movimiento_id = e.currentTarget.getAttribute('data-id');
+        finalizarTicket(movimiento_id)
+    })
 }
 
 function finalizarTicket(movimiento_id) {

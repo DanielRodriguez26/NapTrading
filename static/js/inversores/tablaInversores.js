@@ -139,12 +139,21 @@ function cargarAdministrativosTablaSuccess() {
                 cambiarContrasena(usuario_id)
             });
             $('.agregar-capital').click((e) => {
-                
                 let usuario_id = e.currentTarget.getAttribute('data-id');
                 agregarCapitalModal(usuario_id)
             });
         }
     });
+
+    $('#tableInversores tbody').on('click', 'tr td  ul li span .cambiar-contrasena', function(e) { 
+        let usuario_id = e.currentTarget.getAttribute('data-id');
+        cambiarContrasena(usuario_id)
+    })
+
+    $('#tableInversores tbody').on('click', 'tr td  ul li span .agregar-capital', function(e) { 
+        let usuario_id = e.currentTarget.getAttribute('data-id');
+        agregarCapitalModal(usuario_id)
+    })
 }
 
 function cambiarContrasena(usuario_id) {
@@ -215,10 +224,35 @@ function agregarCapital(usuario_id) {
         type: 'POST',
         url: '/agregarCapital',
         success: function (responseJson, status, statusCode) {
-            cambiarContrasenaSuccess(responseJson, statusCode.status);
+            agregarCapitalSuccess(responseJson, statusCode.status);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             errorConsultandoAPI(jqXHR, textStatus, errorThrown);
         }
     })
+}
+
+
+function agregarCapitalSuccess(responseJson) {
+    
+    var data = responseJson.data
+    username = data.username
+    contra = data.contra
+    mensaje = data.mensaje
+    if (data.redirect) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Bien Hecho',
+            text: `Se agrego un nuevo Capital`,
+        }).then((result) => {
+            window.location.href = data.url
+        })
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: mensaje,
+            
+        })
+    }
+
 }

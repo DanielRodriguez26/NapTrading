@@ -16,7 +16,7 @@ function registarEventos() {
     #inversores`).hide();
 
     cargarLinksPermitidos()
-    cargarIndicadores()
+    
     cargarLinks()
 
 }
@@ -43,9 +43,8 @@ function cargarIndicadores() {
 
 function cargarLinksPermitidosSuccess(data){
     
-    if (data.data == '1') {
+    if (data.data == '2') {
         $(`#historicos,
-        #homeInversor,
         #auditoria,
         #crearInversores,
         #administrarInversores,
@@ -55,9 +54,13 @@ function cargarLinksPermitidosSuccess(data){
         #cambiarContrasena,
         #administradores,
         #inversores`).show()
-    }else if (data.data == '2') {
-        $('#cambiarContrasena').show();
+        $('#contenido').load('solicitudes');
+
         
+    }else if (data.data == '1') {
+        $(`#cambiarContrasena,#homeInversor`).show();
+        
+        cargarIndicadores()
     }
 }
 function cargarIndicadoresSuccess(data) {
