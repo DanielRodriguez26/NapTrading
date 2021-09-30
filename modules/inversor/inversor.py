@@ -54,7 +54,12 @@ def crearInversorModule():
                     (username, contrase))
         usuario_id = cur.lastrowid
 
-        cur.execute('''INSERT INTO inversores (usuario_id, identificacion, nombres, apellidos,telefono,email,pais) VALUES (%s,%s,%s,%s,%s,%s,%s);
+        cur.execute('''INSERT INTO  inversores 
+                                    (usuario_id, identificacion, 
+                                    nombres, apellidos,telefono,
+                                    email,pais,fecha_inicio_pool,
+                                    reinvertir_ganancias) 
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,NOW(),0);
                     ''', (usuario_id, identificacion, nombre, apellidos, telefono, email, pais))
         mydb.commit()
         cur.close()
@@ -162,6 +167,9 @@ def agregarCapitalModule(usuario_id,capital):
             capital = int(capital)
             cur.execute(''' INSERT INTO capital(usuario_id,monto,fecha,disponibilidad) VALUES(%s,%s,Now(),null);''',
                         (usuario_id, capital,))
+
+            cur.execute(''' INSERT INTO ganancias(usuario_id,monto,fecha,disponibilidad) VALUES(%s,0,Now(),null);''',
+                        (usuario_id,))
 
         mydb.commit()
         cur.execute(
