@@ -1,18 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, g, make_response, session, escape, Response,json
 import MySQLdb
 from werkzeug.utils import secure_filename
+from modules.ConnectDataBase import ConnectDataBase
 import modules.customhash as customhash
 import modules.authentication as authentication
 import modules.globalvariables as gb
 import uuid
 import collections
 
-globalvariables = gb.GlobalVariables(True)
-mydb= MySQLdb.connect(
-    host=globalvariables.MysqlHost,
-    user=globalvariables.MysqlUser,
-    password=globalvariables.MysqlPassword,
-    database=globalvariables.MysqlDataBase)  
 
 
 
@@ -25,6 +20,7 @@ def cambiarContrasenaModulo():
 
         nuevaContrasena = customhash.hash(nuevaContrasena)
         contrasenaForm = customhash.hash(contrasena)
+        mydb = ConnectDataBase()
         cur = mydb.cursor()
         cur.execute('''SELECT contrasenia FROM usuarios WHERE usuario_id = %s;''',(usuario,))
         data=cur.fetchone()
@@ -41,12 +37,11 @@ def cambiarContrasenaModulo():
             objData= collections.OrderedDict()
             objData['url']= '/home'
             objData['redirect']= True
-
-            #'8de3ea8e9fd1484695fba4e6e8ea9cf7e04994147dbf5a097b6f6ac24f6729687b43b0b76647d14c63c89794790068cbf7da002621392db9974f57ca8436480b'
-            #'8de3ea8e9fd1484695fba4e6e8ea9cf7e04994147dbf5a097b6f6ac24f6729687b43b0b76647d14c63c89794790068cbf7da002621392db9974f57ca8436480b'
+            mydb.close()
             return objData
 
         else:
+            mydb.close()
             objData= collections.OrderedDict()
             objData['redirect']= False
 

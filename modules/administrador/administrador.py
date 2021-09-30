@@ -1,23 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, g, make_response, session, escape, Response,json
 import MySQLdb
 from werkzeug.utils import secure_filename
+from modules.ConnectDataBase import ConnectDataBase
 import modules.customhash as customhash
 import modules.authentication as authentication
 import modules.globalvariables as gb
 import uuid
 import collections
 
-globalvariables = gb.GlobalVariables(True)
-mydb= MySQLdb.connect(
-    host=globalvariables.MysqlHost,
-    user=globalvariables.MysqlUser,
-    password=globalvariables.MysqlPassword,
-    database=globalvariables.MysqlDataBase)  
-
 
 
 def crearAdministradorModule():
     if request.method == "POST":
+
         nombre = request.form['nombre']
         apellidos = request.form['apellidos']
         identificacion = request.form['identificacion']
@@ -25,6 +20,7 @@ def crearAdministradorModule():
         telefono = request.form['telefono']
         pais = request.form['pais']
 
+        mydb = ConnectDataBase()
         cur = mydb.cursor()
         objData= collections.OrderedDict()
 
@@ -74,6 +70,7 @@ def crearAdministradorModule():
         auditData=str(auditData[0])
 
         cur.close()
+        mydb.close()
         
         objData['contra']= contra
         objData['url']= '/home'
@@ -94,6 +91,7 @@ def editarAdministradorModule():
         contra = contra[0:5]
         contrase = customhash.hash(contra)
 
+        mydb = ConnectDataBase()
         cur = mydb.cursor()
 
         cur.execute('''SELECT username FROM usuarios WHERE usuario_id = %s;''',(usuario,))
@@ -125,6 +123,7 @@ def editarAdministradorModule():
             auditData= cur.fetchone()
 
         cur.close()
+        mydb.close()
         usuarioAudit =auditData[0]
         objData= collections.OrderedDict()
         objData['contra']= contra
@@ -138,11 +137,14 @@ def editarAdministradorModule():
 
 def administrarAdministrativosTablaModulo():
     if request.method == "POST":
-        cur = mydb.cursor()
 
+        mydb = ConnectDataBase()
+        cur = mydb.cursor()
         cur.execute('''SELECT * FROM administrativos''')
         data = cur.fetchall()
         cur.close()
+        mydb.close()
+
         dataColl = []
         if data:
             for row in data:

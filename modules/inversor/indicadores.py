@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, g, make_response, session, escape, Response, json
 from datetime import datetime, timedelta
+from modules.ConnectDataBase import ConnectDataBase
 import MySQLdb
 from werkzeug.utils import secure_filename
 import modules.customhash as customhash
@@ -9,12 +10,7 @@ import uuid
 
 import collections
 
-globalvariables = gb.GlobalVariables(True)
-mydb = MySQLdb.connect(
-    host=globalvariables.MysqlHost,
-    user=globalvariables.MysqlUser,
-    password=globalvariables.MysqlPassword,
-    database=globalvariables.MysqlDataBase)
+
 
 
 def indicadoresModule():
@@ -26,6 +22,7 @@ def indicadoresUrlModulo():
     id = session["usuario"]
     objData = collections.OrderedDict()
 
+    mydb = ConnectDataBase()
     cur = mydb.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute('''SELECT monto FROM ganancias where usuario_id =%s''', (id,))
@@ -54,6 +51,7 @@ def indicadoresUrlModulo():
 
     nombre = data['nombres'] + ' ' + data['apellidos']
     cur.close()
+    mydb.close()
     fechaPull = data['fecha_inicio_pool']
     fechaPullinicio = str(fechaPull)
     fechaPullinicio = fechaPullinicio.split(' ')[0]
@@ -72,7 +70,7 @@ def indicadoresUrlModulo():
 
     ganancia = capital*10/100
     totalCapital = capital + gananciasAcumuladas
-    totalInvertidoAcumulado = capital - totalCapital - TotalRetiros
+    totalInvertidoAcumulado =  totalCapital -totalInvertido- TotalRetiros
 
     objData['username'] = username
     objData['nombre'] = nombre
@@ -100,6 +98,7 @@ def retiroganaciasModulo():
     gananciaRetiro = int(request.form['gananciaRetiro'])
     metodoRetiro = request.form['metodoRetiro']
 
+    mydb = ConnectDataBase()
     cur = mydb.cursor()
     cur.execute(
         ''' SELECT monto FROM ganancias  WHERE usuario_id = %s;''', (id,))
@@ -129,6 +128,7 @@ def retiroganaciasModulo():
                             VALUES (%s, 'RG', %s, '1' ,%s,%s)''', (id, gananciaRetiro, metodoRetiro, emailRetiro))
             mydb.commit()
             cur.close()
+            mydb.close()
 
             objData['mensaje'] = 'En 3 dias te daran una respuesta de tu retiro'
             objData['url'] = '/home'
@@ -136,11 +136,13 @@ def retiroganaciasModulo():
 
             return objData
         else:
+            mydb.close()
             objData['mensaje'] = 'La cantidad de retio excede el moto que tiene actualmente'
             objData['redirect'] = False
             cur.close()
             return objData
     else:
+        mydb.close()
         objData['mensaje'] = 'Actualmente no es posible hacer un retido sus ganancias ya que hace falta ' + str(diasFaltantes)+' dias '
         objData['redirect'] = False
         cur.close()
@@ -154,7 +156,9 @@ def retiroCapitalModulo():
     gananciaRetiro = int(request.form['gananciaRetiro'])
     metodoRetiro = request.form['metodoRetiro']
 
+    mydb = ConnectDataBase()
     cur = mydb.cursor()
+    
     cur.execute(''' SELECT monto FROM capital  WHERE usuario_id = %s;''', (id,))
     monto = cur.fetchone()
     monto = int(monto[0])
@@ -189,6 +193,7 @@ def retiroCapitalModulo():
                                     VALUES (%s, 'RC', %s, '1' ,%s,%s,NOW(),NOW())''', (id, gananciaRetiro, metodoRetiro, emailRetiro))
                     mydb.commit()
                     cur.close()
+                    mydb.close()
 
                     objData['mensaje'] = 'En 3 dias te daran una respuesta de tu retiro'
                     objData['url'] = '/home'
@@ -196,16 +201,19 @@ def retiroCapitalModulo():
 
                     return objData
                 else:
+                    mydb.close()
                     objData['mensaje'] = 'La cantidad de retio excede el moto que tiene actualmente'
                     objData['redirect'] = False
                     cur.close()
                     return objData
             else:
+                mydb.close()
                 objData['mensaje'] = 'Actualmente no es posible hacer un retido su capital, ya que hace falta ' +diasFaltantes+' dias '
                 objData['redirect'] = False
                 cur.close()
                 return objData
     else:
+        mydb.close()
         objData['mensaje'] = 'La cantidad de retio excede el moto que tiene actualmente'
         objData['redirect'] = False
         cur.close()
