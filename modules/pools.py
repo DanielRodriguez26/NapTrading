@@ -21,12 +21,12 @@ def finalizarPool():
     usuariosData = cur.fetchall()   
     
     for row in usuariosData:
-
+        usuarioID = row[0]
         #Se valida si ya han pasado 30 días del Pool
         if row[6] >= 30:
+            
             #Se valida si aun no se le ha hecho la inserción a ganancias
-            if row[7] == 0:
-                usuarioID = row[0]
+            if row[7] == 0:                
                 totalCapital= row[4] + row[5]
                 gananciasMes = totalCapital * 0.10
 
@@ -39,19 +39,19 @@ def finalizarPool():
                 data = cur.fetchall()
 
                 if data:
-                    for row in data:
+                    for row2 in data:
 
-                        if row[1] == 'IC':
-                            monto = row[0]
-                            diasCapital = row[2] #cuantos días no opero el ingreso de capital
+                        if row2[1] == 'IC':
+                            monto = row2[0]
+                            diasCapital = row2[2] #cuantos días no opero el ingreso de capital
                             ingresoCapital=((int(monto)*0.1)/30)*int(diasCapital)
 
                             gananciasMes = gananciasMes - ingresoCapital
 
                         
-                        if row[1] == 'RC':
-                            monto = row[0]
-                            diasCapital = row[2]  #cuantos días operó el total capital actual despues del retiro
+                        if row2[1] == 'RC':
+                            monto = row2[0]
+                            diasCapital = row2[2]  #cuantos días operó el total capital actual despues del retiro
                             ingresoCapital=((int(monto)*0.1)/30)*int(diasCapital)
                             gananciasMes = gananciasMes + ingresoCapital
             
@@ -69,21 +69,24 @@ def finalizarPool():
                 cur.execute(''' UPDATE inversores 
                             SET ganancias_mes = 1
                             WHERE usuario_id = %s;''',
-                            (usuarioID))
+                            (usuarioID,))
 
             if row[3] == 1:
                 cur.execute(''' UPDATE inversores 
-                            SET ganancias_mes = 0
+                            SET ganancias_mes = 0,
                             fecha_inicio_pool = NOW()
                             WHERE usuario_id = %s;''',
-                            (usuarioID))
+                            (usuarioID,))
             else:
                 if row[6] > 33:
                     cur.execute(''' UPDATE inversores 
-                                SET ganancias_mes = 0
+                                SET ganancias_mes = 0,
                                 fecha_inicio_pool = NOW()
                                 WHERE usuario_id = %s;''',
-                                (usuarioID))
+                                (usuarioID,))
+            
+            mydb.commit()
+    cur.close()
 
 
 finalizarPool()
