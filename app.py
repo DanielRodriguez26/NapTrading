@@ -20,7 +20,7 @@ from modules.authentication import permisosModules
 from modules.inversor.indicadores import indicadoresModule, indicadoresUrlModulo, retiroganaciasModulo, retiroCapitalModulo
 from modules.login import loginVerifyModule
 from modules.administrador.administrador import crearAdministradorModule, editarAdministradorModule, administrarAdministrativosTablaModulo
-from modules.inversor.inversor import crearInversorModule, editarInversorModule, administrarInversorTablaModulo, agregarCapitalModule
+from modules.inversor.inversor import crearInversorModule, administrarInversorTablaModulo, agregarCapitalModule
 from modules.historicos import historicosTablaModulo, indicadoresHistoricosModulo,descargarExcelHistoricoModulo
 from modules.cambiarContrasena import cambiarContrasenaModulo
 from modules.administrador.solicitudes import finalizarTicketModulo, finalizarTicketModuloAudit, solicitudesTablaModulo
@@ -270,6 +270,7 @@ def crearInversor():
             auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Crear Inversor', 'Se creo el inversor con los siguientes datos: Nombre ' + str(objData['auditNombre'])+', Apellidos '+str(
                 objData['auditApellidos'])+', email '+str(objData['auditEmail'])+',  identificación: ' + str(objData['auditIdentificacion'])+', capital:' + str(objData['auditCapital']), '')
             audit.AddAudit(auditory)
+            return Response(json.dumps({'data': objData}), status=200, mimetype='application/json')
         return render_template("403.html")
     except Exception as error:
         logger.exception(error)

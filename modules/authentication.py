@@ -1,5 +1,6 @@
 from flask import request,render_template,url_for
 from flask_mysqldb import  MySQLdb
+from modules.ConnectDataBase import ConnectDataBase
 from flask import session
 import datetime
 import modules.customhash as customhash
@@ -7,13 +8,6 @@ import modules.globalvariables as gb
 import collections
 
 
-
-globalvariables = gb.GlobalVariables(True)
-mydb= MySQLdb.connect(
-    host=globalvariables.MysqlHost,
-    user=globalvariables.MysqlUser,
-    password=globalvariables.MysqlPassword,
-    database=globalvariables.MysqlDataBase)  
 
 class authenticateResponse:
     # URL a la que va a ser redirigido el usuario. Puede ser el home de un usuario especifico en caso de que la autenticación sea exitosa, o al mismo formulario
@@ -31,14 +25,15 @@ class authenticateResponse:
     secondDevic = 0
 
 def authenticate(id, contra):
+    mydb = ConnectDataBase()
     cur = mydb.cursor(MySQLdb.cursors.DictCursor)
     cur.execute(" SELECT * FROM usuarios WHERE username = %s", (id,))
     user = cur.fetchone()
     cur.close()
-   
+
     response= collections.OrderedDict()
     
-    if user != None:       
+    if user != None:
 
         hashedPass = customhash.hash(contra)
         contrasena = user["contrasenia"]
@@ -49,6 +44,7 @@ def authenticate(id, contra):
         if contrasena == hashedPass and username == id:           
             #Se valida el Rol
             if rol == '2':
+                
                 cur = mydb.cursor()
                 cur.execute(" SELECT * FROM administrativos WHERE usuario_id = %s", (usuario_id,))
                 data = cur.fetchone()
@@ -64,8 +60,9 @@ def authenticate(id, contra):
                     response['redirect'] = False
                     response['bloqueo'] = True
                     response['text']="El usuario se encuentra bloqueado por intentos fallidos, por favor comuniquese con un adminstrador"
-
+                    mydb.close()
                     return response
+
 
                 else:
                     cur.execute(''' UPDATE usuarios 
@@ -81,6 +78,7 @@ def authenticate(id, contra):
             nombre = data[3] + ' ' + data[4]
 
             cur.close()
+            mydb.close()
             session["usuario"] = usuario_id
             response['url'] = '/home'
             response['nombre'] = nombre
@@ -139,10 +137,12 @@ def authenticate(id, contra):
 
 def permisosModules():
     id = session["usuario"]
+    mydb = ConnectDataBase()
     cur = mydb.cursor(MySQLdb.cursors.DictCursor)
     cur.execute(" SELECT * FROM usuarios WHERE usuario_id = %s", (id,))
     user = cur.fetchone()
     cur.close()
+    mydb.close()
     response= collections.OrderedDict()
     response = str(user["rol"])
     return response
