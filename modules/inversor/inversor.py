@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, g, make_response, session, escape, Response, json
 from modules.ConnectDataBase import ConnectDataBase
 import MySQLdb
+from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 import modules.customhash as customhash
 import modules.authentication as authentication
@@ -55,8 +56,8 @@ def crearInversorModule():
                                     (usuario_id, identificacion, 
                                     nombres, apellidos,telefono,
                                     email,pais,fecha_inicio_pool,
-                                    reinvertir_ganancias) 
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,NOW(),0);
+                                    reinvertir_ganancias,retirar_capital) 
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,NOW(),0,3);
                     ''', (usuario_id, identificacion, nombre, apellidos, telefono, email, pais))
         mydb.commit()
         cur.close()
@@ -123,6 +124,9 @@ def agregarCapitalModule(usuario_id,capital):
 
         
         email = data[0]
+        fecha=datetime.now()
+        fechaRetiroCpital = str(fecha + timedelta(days=180))
+
 
         cur.execute(''' INSERT INTO historicomovimientos
                         (usuario_id,fecha,
@@ -130,10 +134,11 @@ def agregarCapitalModule(usuario_id,capital):
                         monto,estado,
                         fecha_limite_solicitud,
                         email_solicitud,
-                        disponible
+                        disponible,
+                        fecha
                         ) 
                         VALUES(%s,NOW(),'IC',%s,0,NULL,%s,%s)
-                    ''', (usuario_id, capital, email, capital))
+                    ''', (usuario_id, capital, email, capital,fechaRetiroCpital))
         historico_id = cur.lastrowid
         if monto is not None:
             
@@ -153,8 +158,6 @@ def agregarCapitalModule(usuario_id,capital):
             '''SELECT identificacion,nombres,apellidos,email FROM inversores WHERE usuario_id = %s;''', (usuario_id,))
         auditData = cur.fetchone()
 
-        auditData = str(auditData[0])
-
         cur.close()
         mydb.close()
 
@@ -165,9 +168,9 @@ def agregarCapitalModule(usuario_id,capital):
         objData['auditNombre'] = auditData[1]
         objData['auditApellido'] = auditData[2]
         objData['auditCapital'] = capital
-        objData['auditIdentificacion'] = auditData[0]
+        objData['auditIdentificacion'] = str(auditData[0])
         objData['auditEmail'] = auditData[3]
-        cur.close()
+
         return objData
 
 

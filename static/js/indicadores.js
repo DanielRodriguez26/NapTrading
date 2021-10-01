@@ -44,10 +44,24 @@ function cargarIndicadoresUrlSuccess(data) {
     $('#fechaPullinicio').text(`${data.fechaPullinicio}`);
     $('#fechaPullGanancia').text(`Se puede retirar el ${data.fechaPullGanancia}`);
     $('#fechaIvertida').text(`Se puede retirar el ${data.fechaIvertida}`);
+    if (data.check == 1) {
+        $('#reinvertir_ganancias').attr('checked', 'checked');
+    }
+    
 
 
     $('#aceptarganancias').click(()=>{retiroganacias('/retirarGanancias')})
     $('#aceptarCapital').click(()=>{retiroganacias('/retirarCapital')})
+
+    $('#reinvertir_ganancias').on("click",()=> {
+        debugger
+        var condiciones = $("#reinvertir_ganancias").is(":checked");
+        if (condiciones) {
+            reuinvertirGanancias(1)
+        } else {
+            reuinvertirGanancias(0)
+        }
+    });
 
 }
 
@@ -119,4 +133,27 @@ function retiroganaciasSuccess(responseJson){
             text: data.text,
         })
     }
+}
+
+function reuinvertirGanancias(estado) {
+    $.ajax({
+        data:{
+            estado:estado
+        },
+        cache: false,
+        type: 'POST',
+        url: '/reuinvertirGanancias',
+        success: function (responseJson, status, statusCode) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Bien Hecho',
+                text: 'Has seleccionado el campo de reinvertir',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            errorConsultandoAPI(jqXHR, textStatus, errorThrown);
+        }
+    })
 }
