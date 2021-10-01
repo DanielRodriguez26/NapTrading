@@ -17,11 +17,11 @@ import modules.customhash as customhash
 
 # url
 from modules.authentication import permisosModules
-from modules.inversor.indicadores import indicadoresModule, indicadoresUrlModulo, retiroganaciasModulo, retiroCapitalModulo
+from modules.inversor.indicadores import indicadoresModule, indicadoresUrlModulo, retiroganaciasModulo, retiroCapitalModulo,reuinvertirGananciasModulo
 from modules.login import loginVerifyModule
 from modules.administrador.administrador import crearAdministradorModule, editarAdministradorModule, administrarAdministrativosTablaModulo
 from modules.inversor.inversor import crearInversorModule, administrarInversorTablaModulo, agregarCapitalModule
-from modules.historicos import historicosTablaModulo, indicadoresHistoricosModulo,descargarExcelHistoricoModulo
+from modules.historicos import historicosTablaModulo, indicadoresHistoricosModulo, descargarExcelHistoricoModulo
 from modules.cambiarContrasena import cambiarContrasenaModulo
 from modules.administrador.solicitudes import finalizarTicketModulo, finalizarTicketModuloAudit, solicitudesTablaModulo
 from modules.administrador.auditoria import auditoriaTablaModule
@@ -114,9 +114,7 @@ def loginVerify():
 @app.route('/home')
 def home():
     try:
-
         return render_template('index.html')
-
     except Exception as error:
         logger.exception(error)
 
@@ -166,6 +164,16 @@ def retiroganacias():
     except Exception as error:
         logger.exception(error)
 
+
+@app.route('/reuinvertirGanancias', methods=["GET", "POST"])
+def reuinvertirGanancias():
+    try:
+        if "usuario" in session:
+            dataColl = reuinvertirGananciasModulo()
+            return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
+        return render_template("403.html")
+    except Exception as error:
+        logger.exception(error)
 
 @app.route('/retirarCapital', methods=["GET", "POST"])
 def retirarCapital():
@@ -317,7 +325,7 @@ def agregarCapital():
             usuario_id = request.form['usuario']
             capital = request.form['capital']
             dataColl = agregarCapitalModule(usuario_id, capital)
-            auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Crear Inversor', 'Se creo el inversor con los siguientes datos: Nombre ' + str(dataColl['auditNombre'])+', Apellidos '+str(
+            auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Se agrega  capital al  Inversor', 'Se agrego nuevo capuital para el inversor con los siguientes datos: Nombre ' + str(dataColl['auditNombre'])+', Apellidos '+str(
                 dataColl['auditApellido'])+', email '+str(dataColl['auditEmail'])+',  identificación: ' + str(dataColl['auditIdentificacion'])+', capital:' + str(dataColl['auditCapital']), '')
             audit.AddAudit(auditory)
             return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
@@ -421,6 +429,7 @@ def descargarExcelHistorico():
         return render_template("403.html")
     except Exception as error:
         logger.exception(error)
+
 
 @app.route('/indicadoresHistoricos')
 def indicadoresHistoricos():
