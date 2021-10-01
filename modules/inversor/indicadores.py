@@ -153,9 +153,9 @@ def retiroCapitalModulo():
     id = session["usuario"]
     objData = collections.OrderedDict()
     emailRetiro = request.form['emailRetiro']
-    gananciaRetiro = int(request.form['gananciaRetiro'])
+    gananciaRetiro = request.form['gananciaRetiro']
     metodoRetiro = request.form['metodoRetiro']
-
+    gananciaRetiro =int(gananciaRetiro)
     mydb = ConnectDataBase()
     cur = mydb.cursor()
     
@@ -177,7 +177,7 @@ def retiroCapitalModulo():
             diasTotal = cur.fetchone()
 
             diasFaltantes = 180 - diasTotal[0]
-            if diasTotal > 180:
+            if diasTotal[0] > 180:
                 if montoXCapital >= gananciaRetiro:
 
                     monto = monto-gananciaRetiro
