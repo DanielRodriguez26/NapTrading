@@ -1,17 +1,13 @@
 import MySQLdb
 from werkzeug.utils import secure_filename
-import globalvariables as gb
-import collections
+from modules.ConnectDataBase import ConnectDataBase
+import modules.globalvariables as gb
 
-globalvariables = gb.GlobalVariables(True)
-mydb= MySQLdb.connect(
-    host=globalvariables.MysqlHost,
-    user=globalvariables.MysqlUser,
-    password=globalvariables.MysqlPassword,
-    database=globalvariables.MysqlDataBase)  
+import collections
 
 
 def finalizarPool():
+    mydb = ConnectDataBase()
     cur = mydb.cursor()
     cur.execute(''' SELECT i.usuario_id, i.identificacion, i.fecha_inicio_pool, i.reinvertir_ganancias,
                 c.monto, g.monto, TIMESTAMPDIFF(DAY, fecha_inicio_pool, NOW()), ganancias_mes
@@ -87,6 +83,7 @@ def finalizarPool():
             
             mydb.commit()
     cur.close()
+    mydb.close()
 
 
 finalizarPool()
