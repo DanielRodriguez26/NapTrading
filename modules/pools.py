@@ -1,10 +1,15 @@
 import MySQLdb
 from werkzeug.utils import secure_filename
-from modules.ConnectDataBase import ConnectDataBase
-import modules.globalvariables as gb
-
+import globalvariables as gb
 import collections
 
+def ConnectDataBase():
+    globalvariables = gb.GlobalVariables(True)
+    return MySQLdb.connect(
+    host=globalvariables.MysqlHost,
+    user=globalvariables.MysqlUser,
+    password=globalvariables.MysqlPassword,
+    database=globalvariables.MysqlDataBase)
 
 def finalizarPool():
     mydb = ConnectDataBase()
@@ -70,20 +75,21 @@ def finalizarPool():
             if row[3] == 1:
                 cur.execute(''' UPDATE inversores 
                             SET ganancias_mes = 0,
-                            fecha_inicio_pool = NOW()
+                            fecha_inicio_pool = NOW(),
+                            retirar_capital = 3
                             WHERE usuario_id = %s;''',
                             (usuarioID,))
             else:
                 if row[6] > 33:
                     cur.execute(''' UPDATE inversores 
                                 SET ganancias_mes = 0,
-                                fecha_inicio_pool = NOW()
+                                fecha_inicio_pool = NOW(),
+                                retirar_capital = 3
                                 WHERE usuario_id = %s;''',
                                 (usuarioID,))
             
             mydb.commit()
     cur.close()
     mydb.close()
-
 
 finalizarPool()
