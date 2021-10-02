@@ -261,6 +261,7 @@ def retiroCapitalModulo():
 
 def reuinvertirGananciasModulo():
     if request.method == "POST":
+        
         id = session["usuario"]
         estado = request.form['estado']
 
