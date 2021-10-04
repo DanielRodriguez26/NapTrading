@@ -36,12 +36,15 @@ def crearInversorModule():
                 return objData
 
         username = nombre[0:1] + apellidos + identificacion[-3:]
+        username = username.replace(" ", "")
         username = username.lower()
+        
         cur.execute('''SELECT username FROM usuarios''')
         data = cur.fetchall()
         for row in data:
             if username == row[0]:
                 username = nombre[0:1] + apellidos + identificacion[-4:]
+                username = username.replace(" ", "")
                 username = username.lower()
 
         contra = str(uuid.uuid1())

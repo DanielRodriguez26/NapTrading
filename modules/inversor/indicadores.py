@@ -145,20 +145,20 @@ def retiroganaciasModulo():
                     cur.close()
                     mydb.close()
 
-                    objData['mensaje'] = 'En 3 dias te daran una respuesta de tu retiro'
+                    objData['mensaje'] = 'En maximo 3 días se dara respuesta a tu retiro'
                     objData['url'] = '/home'
                     objData['redirect'] = True
 
                     return objData
                 else:
                     
-                    objData['mensaje'] = 'La cantidad de retio excede el moto que tiene actualmente'
+                    objData['mensaje'] = 'La cantidad de retiro excede el monto que tiene actualmente'
                     objData['redirect'] = False
                     cur.close()
                     mydb.close()
                     return objData
             else:
-                objData['mensaje'] = f'Actualmente no es posible hacer un retido sus ganancias ya que hace falta {diasFaltantes} dias '
+                objData['mensaje'] = f'Actualmente no es posible hacer un retiro sus ganancias ya que hace falta {diasFaltantes} días '
                 objData['redirect'] = False
                 cur.close()
                 mydb.close()
@@ -233,27 +233,27 @@ def retiroCapitalModulo():
                             cur.close()
                             mydb.close()
 
-                            objData['mensaje'] = 'En 3 dias te daran una respuesta de tu retiro'
+                            objData['mensaje'] = 'En maximo 3 días se dara respuesta a tu retiro'
                             objData['url'] = '/home'
                             objData['redirect'] = True
 
                             return objData
                         else:
                             mydb.close()
-                            objData['mensaje'] = 'La cantidad de retio excede el moto que tiene actualmente'
+                            objData['mensaje'] = 'La cantidad de retiro excede el monto que tiene actualmente'
                             objData['redirect'] = False
                             cur.close()
                             return objData
                     else:
                         diasFaltantes=str(diasFaltantes)
-                        objData['mensaje'] = f'Actualmente no es posible hacer un retido su capital, ya que hace falta {diasFaltantes} dias '
+                        objData['mensaje'] = f'Actualmente no es posible hacer un retiro su capital, ya que hace falta {diasFaltantes} días '
                         objData['redirect'] = False
                         cur.close()
                         mydb.close()
                         return objData
             else: 
                 
-                objData['mensaje'] = 'La cantidad de retio excede el moto que tiene actualmente'
+                objData['mensaje'] = 'La cantidad de retio excede el monto que tiene actualmente'
                 objData['redirect'] = False
                 cur.close()
                 mydb.close()
