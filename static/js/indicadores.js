@@ -1,24 +1,28 @@
-$(document).ready(()=>{
+$(document).ready(() => {
     registarEventos()
 })
 
 function registarEventos() {
     cargarIndicadoresUrl()
-    
+
 }
 
 function cargarIndicadoresUrl() {
     $.ajax({
         url: '/indicadoresUrl',
         type: 'GET',
-        success: function (responseJson, status, statusCode) { cargarIndicadoresUrlSuccess(responseJson, statusCode.status); },
-        error: function (jqXHR, textStatus, errorThrown) { errorConsultandoAPI(jqXHR, textStatus, errorThrown); }
+        success: function (responseJson, status, statusCode) {
+            cargarIndicadoresUrlSuccess(responseJson, statusCode.status);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            errorConsultandoAPI(jqXHR, textStatus, errorThrown);
+        }
     });
 }
 
 function cargarIndicadoresUrlSuccess(data) {
-    var data =data.data
-    capital ,totalInvertido, ganancias, gananciasAcumuladas,TotalRetiros,fechaPull
+    var data = data.data
+    capital, totalInvertido, ganancias, gananciasAcumuladas, TotalRetiros, fechaPull
     var capital = formatCurrency(data.capital)
     var ganancias = formatCurrency(data.ganancias)
     var TotalRetiros = formatCurrency(data.TotalRetiros)
@@ -28,8 +32,8 @@ function cargarIndicadoresUrlSuccess(data) {
     var totalInvertidoAcumulado = formatCurrency(data.totalInvertidoAcumulado)
     var fechaPull = data.fechaPull
 
-    
-    
+
+
     $('#capitalInvertido').text(capital);
     $('#ganancias').text(ganancias);
     $('#totalInvertido').text(totalCapital);
@@ -47,23 +51,23 @@ function cargarIndicadoresUrlSuccess(data) {
     if (data.check == 1) {
         $('#reinvertir_ganancias').attr('checked', 'checked');
     }
-    
 
 
-    $('#aceptarganancias').click(()=>{
+
+    $('#aceptarganancias').click(() => {
         const gananciaRetiro = $('#gananciaRetiro').val()
         const emailRetiro = $('#emailRetiro').val()
         const metodoRetiro = $('#metodoRetiro').val()
-        retiroganacias('/retirarGanancias',gananciaRetiro,metodoRetiro,emailRetiro)
+        retiroganacias('/retirarGanancias', gananciaRetiro, metodoRetiro, emailRetiro)
     })
-    $('#aceptarCapital').click(()=>{
+    $('#aceptarCapital').click(() => {
         const gananciaRetiro = $('#capitalRetiro').val()
         const emailRetiro = $('#capitalEmailRetiro').val()
         const metodoRetiro = $('#capitalMetodoRetiro').val()
-        retiroganacias('/retirarCapital',gananciaRetiro,metodoRetiro,emailRetiro)
+        retiroganacias('/retirarCapital', gananciaRetiro, metodoRetiro, emailRetiro)
     })
 
-    $('#reinvertir_ganancias').on("click",()=> {
+    $('#reinvertir_ganancias').on("click", () => {
         debugger
         var condiciones = $("#reinvertir_ganancias").is(":checked");
         if (condiciones) {
@@ -77,11 +81,11 @@ function cargarIndicadoresUrlSuccess(data) {
 
 function formatCurrency(value) {
 
-    if(value === '' || value == null || isNaN(value) ){
+    if (value === '' || value == null || isNaN(value)) {
         return "";
     }
-    
-    if(typeof value == "string"){
+
+    if (typeof value == "string") {
         value = parseInt(value);
     }
 
@@ -93,39 +97,42 @@ function formatCurrency(value) {
         minimumFractionDigits: 0,
         currencyDisplay: "symbol"
     };
-    
+
 
     return value.toLocaleString("en-ES", myObjCurrency);
-}	
-
-
-
-function retiroganacias(url,gananciaRetiro,metodoRetiro,emailRetiro){
-    
-    var data = new FormData();
-    data.append('emailRetiro' ,emailRetiro);
-    data.append('metodoRetiro' , metodoRetiro );
-    data.append('gananciaRetiro' ,gananciaRetiro );
-
-    $.ajax({
-        data:data,
-        cache: false,
-        contentType: false,
-        processData: false,
-        type: 'POST',
-        url: url,
-        success: function (responseJson, status, statusCode) {
-            retiroganaciasSuccess(responseJson, statusCode.status);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            errorConsultandoAPI(jqXHR, textStatus, errorThrown);
-        }
-    })
 }
 
-function retiroganaciasSuccess(responseJson){
+
+
+function retiroganacias(url, gananciaRetiro, metodoRetiro, emailRetiro) {
+
+    if (inputIsValid(gananciaRetiro, emailRetiro)) {
+        var data = new FormData();
+        data.append('emailRetiro', emailRetiro);
+        data.append('metodoRetiro', metodoRetiro);
+        data.append('gananciaRetiro', gananciaRetiro);
+
+        $.ajax({
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url,
+            success: function (responseJson, status, statusCode) {
+                retiroganaciasSuccess(responseJson, statusCode.status);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                errorConsultandoAPI(jqXHR, textStatus, errorThrown);
+            }
+        })
+    }
+
+}
+
+function retiroganaciasSuccess(responseJson) {
     data = responseJson.data
-    if(data.redirect){
+    if (data.redirect) {
         Swal.fire({
             icon: 'success',
             title: 'Bien Hecho',
@@ -135,8 +142,7 @@ function retiroganaciasSuccess(responseJson){
         }).then((result) => {
             window.location.href = data.url
         })
-    }
-    else{
+    } else {
         Swal.fire({
             icon: 'error',
             title: data.mensaje,
@@ -147,8 +153,8 @@ function retiroganaciasSuccess(responseJson){
 
 function reuinvertirGanancias(estado) {
     $.ajax({
-        data:{
-            estado:estado
+        data: {
+            estado: estado
         },
         cache: false,
         type: 'POST',
@@ -165,5 +171,39 @@ function reuinvertirGanancias(estado) {
         error: function (jqXHR, textStatus, errorThrown) {
             errorConsultandoAPI(jqXHR, textStatus, errorThrown);
         }
+    })
+}
+
+
+function inputIsValid(gananciaRetiro,  emailRetiro) {
+
+    if (emailRetiro == '') {
+        alerta()
+        return false;
+    }
+
+    if (gananciaRetiro == '') {
+        alerta()
+        return false;
+    }
+    return true;
+}
+
+function alerta(params) {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
+    Toast.fire({
+        icon: 'error',
+        title: 'Debe ingresar el camapo solicitado'
     })
 }
