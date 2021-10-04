@@ -98,8 +98,9 @@ def retiroganaciasModulo():
     id = session["usuario"]
     objData = collections.OrderedDict()
     emailRetiro = request.form['emailRetiro']
-    gananciaRetiro = int(request.form['gananciaRetiro'])
+    gananciaRetiro = request.form['gananciaRetiro']
     metodoRetiro = request.form['metodoRetiro']
+    gananciaRetiro= int(gananciaRetiro)
 
     mydb = ConnectDataBase()
     cur = mydb.cursor()
