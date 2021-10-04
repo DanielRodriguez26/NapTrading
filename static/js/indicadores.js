@@ -4,7 +4,7 @@ $(document).ready(()=>{
 
 function registarEventos() {
     cargarIndicadoresUrl()
-    retiroganacias()
+    
 }
 
 function cargarIndicadoresUrl() {
@@ -50,8 +50,18 @@ function cargarIndicadoresUrlSuccess(data) {
     
 
 
-    $('#aceptarganancias').click(()=>{retiroganacias('/retirarGanancias')})
-    $('#aceptarCapital').click(()=>{retiroganacias('/retirarCapital')})
+    $('#aceptarganancias').click(()=>{
+        const gananciaRetiro = $('#gananciaRetiro').val()
+        const emailRetiro = $('#emailRetiro').val()
+        const metodoRetiro = $('#metodoRetiro').val()
+        retiroganacias('/retirarGanancias',gananciaRetiro,metodoRetiro,emailRetiro)
+    })
+    $('#aceptarCapital').click(()=>{
+        const gananciaRetiro = $('#capitalRetiro').val()
+        const emailRetiro = $('#capitalEmailRetiro').val()
+        const metodoRetiro = $('#capitalMetodoRetiro').val()
+        retiroganacias('/retirarCapital',gananciaRetiro,metodoRetiro,emailRetiro)
+    })
 
     $('#reinvertir_ganancias').on("click",()=> {
         debugger
@@ -90,12 +100,12 @@ function formatCurrency(value) {
 
 
 
-function retiroganacias(url){
+function retiroganacias(url,gananciaRetiro,metodoRetiro,emailRetiro){
     
     var data = new FormData();
-    data.append('emailRetiro' , $("#emailRetiro").val());
-    data.append('metodoRetiro' ,  $('#metodoRetiro').val());
-    data.append('gananciaRetiro' , $("#gananciaRetiro").val());
+    data.append('emailRetiro' ,emailRetiro);
+    data.append('metodoRetiro' , metodoRetiro );
+    data.append('gananciaRetiro' ,gananciaRetiro );
 
     $.ajax({
         data:data,
