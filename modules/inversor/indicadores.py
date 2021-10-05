@@ -34,10 +34,10 @@ def indicadoresUrlModulo():
         capital = cur.fetchone()
         capital = capital['monto']
 
-        cur.execute("SELECT SUM(monto) as totalInvertido, MIN(fecha) as fecha FROM historicomovimientos WHERE tipo_movimiento in ('IC') AND usuario_id = %s and disponible > 0;", (id,))
+        cur.execute("SELECT SUM(monto) as totalInvertido, MIN(fecha), DATE_ADD(fecha,INTERVAL 180 DAY) as fecha_Invertida FROM historicomovimientos WHERE tipo_movimiento in ('IC') AND usuario_id = %s and disponible > 0;", (id,))
         totalInvertidos = cur.fetchone()
         totalInvertido = int(totalInvertidos["totalInvertido"])
-        fechaIvertida = totalInvertidos["fecha"]
+        fechaIvertida = str(totalInvertidos["fecha_Invertida"])
 
         cur.execute("SELECT ifnull(SUM(monto), 0) as TotalRetiros FROM historicomovimientos WHERE tipo_movimiento in ('RG','RC') AND usuario_id = %s", (id,))
         TotalRetiros = cur.fetchone()
@@ -63,10 +63,7 @@ def indicadoresUrlModulo():
 
         fechaPullGanancia = fechaPullGanancia.split(' ')[0]
 
-        carry, new_month = divmod(fechaIvertida.month-1+6, 12)
-        new_month += 1
-        fechaIvertida = str(fechaIvertida.replace(year=fechaIvertida.year+carry, month=new_month))
-        fechaIvertida = fechaIvertida.split(' ')[0]
+        fechaIvertida = fechaIvertida[0:10]
 
 
 

@@ -137,11 +137,9 @@ def agregarCapitalModule(usuario_id,capital):
                         monto,estado,
                         fecha_limite_solicitud,
                         email_solicitud,
-                        disponible,
-                        fecha
-                        ) 
+                        disponible) 
                         VALUES(%s,NOW(),'IC',%s,0,NULL,%s,%s)
-                    ''', (usuario_id, capital, email, capital,fechaRetiroCpital))
+                    ''', (usuario_id, capital, email, capital))
         historico_id = cur.lastrowid
         if monto is not None:
             

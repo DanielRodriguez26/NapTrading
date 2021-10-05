@@ -25,6 +25,7 @@ from modules.historicos import historicosTablaModulo, indicadoresHistoricosModul
 from modules.cambiarContrasena import cambiarContrasenaModulo
 from modules.administrador.solicitudes import finalizarTicketModulo, finalizarTicketModuloAudit, solicitudesTablaModulo
 from modules.administrador.auditoria import auditoriaTablaModule
+from modules.permisos import permisosUsuario
 
 app = Flask(__name__)
 
@@ -136,6 +137,9 @@ def permisos():
 def indicadores():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(1)
+            if validarPermiso == False:
+                return render_template("403.html")
             dataColl = indicadoresModule()
             return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
         return render_template("403.html")
@@ -147,6 +151,9 @@ def indicadores():
 def indicadoresUrl():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(1)
+            if validarPermiso == False:
+                return render_template("403.html")
             dataColl = indicadoresUrlModulo()
             return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
         return render_template("403.html")
@@ -158,6 +165,10 @@ def indicadoresUrl():
 def retiroganacias():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(1)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             dataColl = retiroganaciasModulo()
             return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
         return render_template("403.html")
@@ -169,6 +180,10 @@ def retiroganacias():
 def reuinvertirGanancias():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(1)
+            if validarPermiso == False:
+                return render_template("403.html")
+            
             dataColl = reuinvertirGananciasModulo()
             return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
         return render_template("403.html")
@@ -179,6 +194,9 @@ def reuinvertirGanancias():
 def retirarCapital():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(1)
+            if validarPermiso == False:
+                return render_template("403.html")
             dataColl = retiroCapitalModulo()
             return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
         return render_template("403.html")
@@ -192,6 +210,10 @@ def retirarCapital():
 def solicitudes():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             return render_template('solicitudes.html')
         return render_template("403.html")
     except Exception as error:
@@ -202,6 +224,10 @@ def solicitudes():
 def solicitudesTabla():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             dataColl = solicitudesTablaModulo()
             recordsTotal = 0
             recordsFiltered = 0
@@ -219,6 +245,10 @@ def solicitudesTabla():
 def finalizarTicket():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             dataColl = finalizarTicketModulo()
             objAuditData = finalizarTicketModuloAudit()
             print(objAuditData['monto'])
@@ -238,6 +268,9 @@ def finalizarTicket():
 def auditoria():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
             return render_template('auditoria.html')
         return render_template("403.html")
     except Exception as error:
@@ -248,6 +281,9 @@ def auditoria():
 def auditoriaTabla():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
             dataColl = auditoriaTablaModule()
             recordsTotal = dataColl[0]
             recordsFiltered = dataColl[0]
@@ -264,6 +300,9 @@ def auditoriaTabla():
 def crearInversores():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
             return render_template('crearInversores.html')
         return render_template("403.html")
     except Exception as error:
@@ -274,6 +313,10 @@ def crearInversores():
 def crearInversor():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             objData = crearInversorModule()
             auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Crear Inversor', 'Se creo el inversor con los siguientes datos: Nombre ' + str(objData['auditNombre'])+', Apellidos '+str(
                 objData['auditApellidos'])+', email '+str(objData['auditEmail'])+',  identificación: ' + str(objData['auditIdentificacion'])+', capital:' + str(objData['auditCapital']), '')
@@ -288,6 +331,10 @@ def crearInversor():
 def editarInversores():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             return render_template('crearInversores.html')
         return render_template("403.html")
     except Exception as error:
@@ -297,7 +344,11 @@ def editarInversores():
 @app.route('/administrarInversores', methods=["GET", "POST"])
 def administrarInversores():
     try:
-        if "usuario" in session:
+        if "usuario" in session:            
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+
+                return render_template("403.html")
             return render_template('administrarInversores.html')
         return render_template("403.html")
     except Exception as error:
@@ -308,6 +359,10 @@ def administrarInversores():
 def administrarInversoresTabla():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             dataColl = administrarInversorTablaModulo()
             recordsTotal = dataColl[0]
             recordsFiltered = dataColl[0]
@@ -322,6 +377,9 @@ def administrarInversoresTabla():
 def agregarCapital():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
             usuario_id = request.form['usuario']
             capital = request.form['capital']
             dataColl = agregarCapitalModule(usuario_id, capital)
@@ -340,6 +398,9 @@ def agregarCapital():
 def crearAdministrativos():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
             return render_template('crearAdministrativos.html')
         return render_template("403.html")
     except Exception as error:
@@ -350,6 +411,9 @@ def crearAdministrativos():
 def crearAdministrador():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
             objData = crearAdministradorModule()
             auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Agregar Capital', 'Se agrego un nuevo capitala al inversor con los siguientes datos: Nombre ' + str(
                 objData['auditNombre'])+', Apellidos '+str(objData['auditApellido'])+', email '+str(objData['auditEmail'])+',  identificación: ' + str(objData['auditIdentificacion']) + '')
@@ -364,6 +428,9 @@ def crearAdministrador():
 def editarAdministrador():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
             objData = editarAdministradorModule()
             auditory = audit.Audit(datetime.datetime.now(), str(
                 session['usuario']), 'Cambiar contraseña', 'Se cambio la contraseña del usuario ' + str(objData['usuarioAudit']), '')
@@ -378,6 +445,9 @@ def editarAdministrador():
 def administrarAdministrativos():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
             return render_template('administrarAdministrativos.html')
         return render_template("403.html")
     except Exception as error:
@@ -388,6 +458,10 @@ def administrarAdministrativos():
 def administrarAdministrativosTabla():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             dataColl = administrarAdministrativosTablaModulo()
             return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
         return render_template("403.html")
@@ -400,6 +474,10 @@ def administrarAdministrativosTabla():
 def historicos():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             return render_template('historicos.html')
         return render_template("403.html")
     except Exception as error:
@@ -410,6 +488,10 @@ def historicos():
 def historicosTabla():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             dataColl = historicosTablaModulo()
             recordsTotal = dataColl[0]
             recordsFiltered = dataColl[0]
@@ -424,6 +506,10 @@ def historicosTabla():
 def descargarExcelHistorico():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
             dataColl = descargarExcelHistoricoModulo()
             return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
         return render_template("403.html")
@@ -435,6 +521,10 @@ def descargarExcelHistorico():
 def indicadoresHistoricos():
     try:
         if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+                
             dataColl = indicadoresHistoricosModulo()
             return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
         return render_template("403.html")
