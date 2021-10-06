@@ -34,10 +34,10 @@ def indicadoresUrlModulo():
         capital = cur.fetchone()
         capital = capital['monto']
 
-        cur.execute("SELECT SUM(monto) as totalInvertido, MIN(fecha), DATE_ADD(fecha,INTERVAL 180 DAY) as fecha_Invertida FROM historicomovimientos WHERE tipo_movimiento in ('IC') AND usuario_id = %s and disponible > 0;", (id,))
+        cur.execute("SELECT SUM(h.monto) as totalInvertido, MIN(h.fecha) as fecha, DATE_ADD(MIN(h.fecha),INTERVAL 180 DAY) as fechaRetiro FROM historicomovimientos as h WHERE tipo_movimiento in ('IC') AND usuario_id = %s and disponible > 0;", (id,))
         totalInvertidos = cur.fetchone()
         totalInvertido = int(totalInvertidos["totalInvertido"])
-        fechaIvertida = str(totalInvertidos["fecha_Invertida"])
+        fechaIvertida = str(totalInvertidos["fechaRetiro"])
 
         cur.execute("SELECT ifnull(SUM(monto), 0) as TotalRetiros FROM historicomovimientos WHERE tipo_movimiento in ('RG','RC') AND usuario_id = %s", (id,))
         TotalRetiros = cur.fetchone()
@@ -202,7 +202,7 @@ def retiroCapitalModulo():
                 for fechaRetiro in fechaRetiros:
                     fechaRetiro = str(fechaRetiro)
                     cur.execute(
-                        '''SELECT TIMESTAMPDIFF(DAY,NOW(), %s) AS dias_transcurridos;''', (fechaRetiro,))
+                        '''SELECT TIMESTAMPDIFF(DAY, %s, NOW()) AS dias_transcurridos;''', (fechaRetiro,))
                     diasTotal = cur.fetchone()
 
                     diasFaltantes = 180 - diasTotal[0]
@@ -235,11 +235,11 @@ def retiroCapitalModulo():
                             objData['redirect'] = True
 
                             return objData
-                        else:
-                            mydb.close()
+                        else:                            
                             objData['mensaje'] = 'La cantidad de retiro excede el monto que tiene actualmente'
                             objData['redirect'] = False
                             cur.close()
+                            mydb.close()
                             return objData
                     else:
                         diasFaltantes=str(diasFaltantes)
