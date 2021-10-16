@@ -69,7 +69,7 @@ def indicadoresUrlModulo():
 
         ganancia = capital*10/100
         totalCapital = capital + gananciasAcumuladas
-        totalInvertidoAcumulado =  totalCapital -totalInvertido- TotalRetiros
+        totalInvertidoAcumulado =  totalInvertido-totalCapital - TotalRetiros
 
         objData['username'] = username
         objData['nombre'] = nombre
