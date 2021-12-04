@@ -54,6 +54,14 @@ def finalizarPool():
                                 SET ganancias_mes = 1
                                 WHERE usuario_id = %s;''',
                                 (usuarioID,))
+                                
+                    descripcionAuditoria = ' Se han agregado ' + str(nuevoMontoGanancias) + ' a las ganancias del inversor'
+
+                    cur.execute(''' INSERT INTO auditorias 
+                        (usuario_id, fecha, accion,
+                        descripcion, usuario_ip) 
+                        VALUES (%s, NOW(), 'Ingreso Ganancia Mensual', %s, NULL);''',
+                        (usuarioID, descripcionAuditoria ))
 
                 if row[3] == 1:
                     cur.execute(''' UPDATE inversores 
@@ -70,14 +78,6 @@ def finalizarPool():
                                     retirar_capital = 3
                                     WHERE usuario_id = %s;''',
                                     (usuarioID,))
-
-                descripcionAuditoria = ' Se han agregado ' + str(nuevoMontoGanancias) + ' a las ganancias del inversor'
-
-                cur.execute(''' INSERT INTO auditorias 
-                    (usuario_id, fecha, accion,
-                    descripcion, usuario_ip) 
-                    VALUES (%s, NOW(), 'Ingreso Ganancia Mensual', %s, NULL);''',
-                    (usuarioID, descripcionAuditoria ))
                 
                 mydb.commit()
 

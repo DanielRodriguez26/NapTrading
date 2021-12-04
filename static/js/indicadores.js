@@ -28,7 +28,7 @@ function cargarIndicadoresUrlSuccess(data) {
     var TotalRetiros = formatCurrency(data.TotalRetiros)
     var totalCapital = formatCurrency(data.totalCapital)
     var gananciasAcumuladas = formatCurrency(data.gananciasAcumuladas)
-    var totalCapital = formatCurrency(data.totalCapital)
+    var totalInvertido = formatCurrency(data.totalInvertido)
     var totalInvertidoAcumulado = formatCurrency(data.totalInvertidoAcumulado)
     var fechaPull = data.fechaPull
 
@@ -36,7 +36,7 @@ function cargarIndicadoresUrlSuccess(data) {
 
     $('#capitalInvertido').text(capital);
     $('#ganancias').text(ganancias);
-    $('#totalInvertido').text(totalCapital);
+    $('#totalInvertido').text(totalInvertido);
     $('#totalInvertidoAcumulado').text(totalInvertidoAcumulado);
     $('#fechaPull').text(fechaPull);
     $('#totalCapital').text(totalCapital);
@@ -93,8 +93,8 @@ function formatCurrency(value) {
     var myObjCurrency = {
         style: "currency",
         currency: "USD",
-        maximumFractionDigits: 0,
-        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
         currencyDisplay: "symbol"
     };
 

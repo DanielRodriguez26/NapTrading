@@ -69,7 +69,9 @@ def indicadoresUrlModulo():
 
         ganancia = capital*10/100
         totalCapital = capital + gananciasAcumuladas
-        totalInvertidoAcumulado =  totalInvertido-totalCapital - TotalRetiros
+        totalInvertidoAcumulado =  totalCapital - totalInvertido - TotalRetiros
+        if totalInvertidoAcumulado < 0:
+            totalInvertidoAcumulado = 0
 
         objData['username'] = username
         objData['nombre'] = nombre
@@ -117,53 +119,36 @@ def retiroganaciasModulo():
 
         diasTotal = diasTotal[0]
         diasFaltantes = 30 - diasTotal
+        if diasTotal > 30:
+            if monto >= gananciaRetiro:
+                monto = monto-gananciaRetiro
+                
+                fecha=datetime.now()
+                fechaEntrega = str(fecha + timedelta(days=3))
 
-        cur.execute(''' SELECT retirar_capital FROM inversores  WHERE usuario_id = %s;''', (id,))
-        retirar_capital = cur.fetchone()
-        retirar_capital = retirar_capital[0]
-        if retirar_capital != 0:
-            retirar_capital-=1
-            if diasTotal > 30:
-                if monto >= gananciaRetiro:
-                    monto = monto-gananciaRetiro
-                    
-                    fecha=datetime.now()
-                    fechaEntrega = str(fecha + timedelta(days=3))
+                cur.execute(" UPDATE ganancias  SET monto = %s , fecha = NOW() WHERE usuario_id = %s", (monto, id,))
 
+                cur.execute('''INSERT INTO historicomovimientos 
+                                (usuario_id, tipo_movimiento, monto, estado,metodo_desembolso,email_solicitud,fecha_limite_solicitud) 
+                                VALUES (%s, 'RG', %s, '1' ,%s,%s,%s)''', (id, gananciaRetiro, metodoRetiro, emailRetiro,fechaEntrega))
+                mydb.commit()
+                cur.close()
+                mydb.close()
 
-                    cur.execute("UPDATE inversores  SET inversores = %s WHERE usuario_id = %s", (retirar_capital, id,))
+                objData['mensaje'] = 'En maximo 3 días se dara respuesta a tu retiro'
+                objData['url'] = '/home'
+                objData['redirect'] = True
 
-                    cur.execute(" UPDATE ganancias  SET monto = %s , fecha = NOW() WHERE usuario_id = %s", (monto, id,))
-
-                    cur.execute('''INSERT INTO historicomovimientos 
-                                    (usuario_id, tipo_movimiento, monto, estado,metodo_desembolso,email_solicitud,fecha_limite_solicitud) 
-                                    VALUES (%s, 'RG', %s, '1' ,%s,%s,%s)''', (id, gananciaRetiro, metodoRetiro, emailRetiro,fechaEntrega))
-                    mydb.commit()
-                    cur.close()
-                    mydb.close()
-
-                    objData['mensaje'] = 'En maximo 3 días se dara respuesta a tu retiro'
-                    objData['url'] = '/home'
-                    objData['redirect'] = True
-
-                    return objData
-                else:
-                    
-                    objData['mensaje'] = 'La cantidad de retiro excede el monto que tiene actualmente'
-                    objData['redirect'] = False
-                    cur.close()
-                    mydb.close()
-                    return objData
+                return objData
             else:
-                objData['mensaje'] = f'Actualmente no es posible hacer un retiro sus ganancias ya que hace falta {diasFaltantes} días '
+                
+                objData['mensaje'] = 'La cantidad de retiro excede el monto que tiene actualmente'
                 objData['redirect'] = False
                 cur.close()
                 mydb.close()
                 return objData
-
-        else: 
-
-            objData['mensaje'] = 'Ya excediste la cantidad de retiros de este mes'
+        else:
+            objData['mensaje'] = f'Actualmente no es posible hacer un retiro sus ganancias ya que hace falta {diasFaltantes} días '
             objData['redirect'] = False
             cur.close()
             mydb.close()
