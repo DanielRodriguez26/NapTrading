@@ -34,12 +34,16 @@ function registarEventos() {
     
 }
 
+$( "#buscadorTablaInversores" ).click(function() {
+    registarEventos()
+  });
+
 function cargarAdministrativosTablaSuccess() {
     $('#tblInversores').empty().append(`
     <table class="table table-striped" id="tableInversores">
 `);
+
     //deleting operators to reset
-    
     $tblOperadores = $('#tableInversores').DataTable({
         responsive: true,
         searching: false,
@@ -52,6 +56,9 @@ function cargarAdministrativosTablaSuccess() {
         ajax: {
             type: 'POST',
             url: '/administrarInversoresTabla',
+            data:{
+                'buscadorFront': $('#buscarInversor').val()
+                }
         },
         columns: [{
             title: "Nombre",
@@ -256,3 +263,4 @@ function agregarCapitalSuccess(responseJson) {
     }
 
 }
+
