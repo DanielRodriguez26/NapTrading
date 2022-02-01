@@ -64,32 +64,32 @@ function cargarAdministrativosTablaSuccess() {
             title: "Nombre",
             "data-label": "Nombre",
             "data": "nombre",
-            "orderable": true,
+            "orderable": false,
         },
         {
             title: "Identificación",
             "data-label": "Identificación",
             "data": "identificacion",
-            "orderable": true,
+            "orderable": false,
         },
         {
             title: "Email",
             "data-label": "Email",
             "data": "email",
-            "orderable": true,
+            "orderable": false,
         },
         {
             title: "Teléfono",
             "data-label": "Teléfono",
             "data": "telefono",
-            "orderable": true,
+            "orderable": false,
 
         },
         {
             title: "Pais",
             "data-label": "Pais",
             "data": "pais",
-            "orderable": true,
+            "orderable": false,
         },
         {
             title: "Agregar Capital",
@@ -124,6 +124,23 @@ function cargarAdministrativosTablaSuccess() {
                 }
                 return respuesta;
             }
+        },
+        {
+            title: "Editar Inversor",
+            "data": "usuario_id",
+            "orderable": false,
+            'className': 'table-dibanka__column table-dibanka__column--button',
+            "render": (usuario_id, type, administrador) => {
+                var respuesta = '';
+
+                if (usuario_id) {
+                    
+                    respuesta += `
+                            <button data-id="${usuario_id}" class="badge bg-warning editar-inversor">Editar Inversor</button>
+                        `;
+                }
+                return respuesta;
+            }
         }
         ],
         'drawCallback': () => {
@@ -148,6 +165,12 @@ function cargarAdministrativosTablaSuccess() {
             $('.agregar-capital').click((e) => {
                 let usuario_id = e.currentTarget.getAttribute('data-id');
                 agregarCapitalModal(usuario_id)
+            });
+
+            $('.editar-inversor').click((e) => {
+                
+                let usuario_id = e.currentTarget.getAttribute('data-id');
+                editarInversor(usuario_id)
             });
         }
     });
@@ -209,6 +232,7 @@ function cambiarContrasenaSuccess(responseJson) {
 
 }
 
+
 function agregarCapitalModal(usuario_id) {
 
     $('#modalCapital').modal('show')
@@ -264,3 +288,19 @@ function agregarCapitalSuccess(responseJson) {
 
 }
 
+function editarInversor(usuario_id) {
+    var data = new FormData();
+    data.append('usuario' , usuario_id);
+
+    $.ajax({
+        data:data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        url: '/editarInversorFormulario',
+        success: function (responseJson, status, statusCode) {
+            ;
+        },
+    })
+}
