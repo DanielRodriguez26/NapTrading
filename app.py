@@ -318,9 +318,10 @@ def crearInversor():
                 return render_template("403.html")
 
             objData = crearInversorModule()
-            auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Crear Inversor', 'Se creo el inversor con los siguientes datos: Nombre ' + str(objData['auditNombre'])+', Apellidos '+str(
-                objData['auditApellidos'])+', email '+str(objData['auditEmail'])+',  identificación: ' + str(objData['auditIdentificacion'])+', capital:' + str(objData['auditCapital']), '')
-            audit.AddAudit(auditory)
+            if objData['redirect'] != False:
+                auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Crear Inversor', 'Se creo el inversor con los siguientes datos: Nombre ' + str(objData['auditNombre'])+', Apellidos '+str(
+                    objData['auditApellidos'])+', email '+str(objData['auditEmail'])+',  identificación: ' + str(objData['auditIdentificacion'])+', capital:' + str(objData['auditCapital']), '')
+                audit.AddAudit(auditory)
             return Response(json.dumps({'data': objData}), status=200, mimetype='application/json')
         return render_template("403.html")
     except Exception as error:

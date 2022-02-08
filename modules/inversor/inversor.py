@@ -145,7 +145,7 @@ def agregarCapitalModule(usuario_id,capital):
             
             capitalSum = int(capital) + monto[0]
             cur.execute(''' UPDATE capital  SET monto = %s , fecha = NOW() WHERE usuario_id = %s''',
-                        (capitalSum, historico_id))
+                        (capitalSum, usuario_id))
         else:
             capital = int(capital)
             cur.execute(''' INSERT INTO capital(usuario_id,monto,fecha,disponibilidad) VALUES(%s,%s,Now(),null);''',
