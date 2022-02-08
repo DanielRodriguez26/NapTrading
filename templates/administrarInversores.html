@@ -2,12 +2,25 @@
     <div class="page-heading">
         <h3>Inversores</h3>
     </div>
+    <div class='row'> 
+        <div class="col">
+            <input type="text" class="form-control" id="buscarInversor" placeholder="Buscar Nombre">
+        </div>
+        <div class="col-md-8">
+            <a href="#" class="btn btn-primary" id="buscadorTablaInversores">Buscar</a>
+        </div>
+    </div>
+    <div><p>&nbsp;</p></div>
+
+    <!-- Inicia el datatable-->
     <div class="card">
         <div class="card-body" id="tblInversores"></div>
     </div>
     <script src="../static/js/inversores/tablaInversores.js"></script>
+    <!-- Termina el Dttble-->
 </section>
 
+<!-- Modal de agregar Capital-->
 <div class="modal fade text-left show" id="modalCapital" tabindex="-1" aria-labelledby="myModalLabel33"
     aria-modal="true" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
