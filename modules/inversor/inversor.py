@@ -84,28 +84,34 @@ def crearInversorModule():
 
 def administrarInversorTablaModulo():
     if request.method == "POST":
+        buscador = request.form['buscadorFront']
         desde = int(request.values.get('start'))
+
         mydb = ConnectDataBase()
         cur = mydb.cursor()
-
-        cur.execute('''CALL SP_CONSULTAR_INVERSORES(%s);''', (desde,))
+        cur.execute('''CALL SP_CONSULTAR_INVERSORES(%s,%s);''', (desde,buscador,))
         data = cur.fetchall()
         cur.close()
         mydb.close()
         dataColl = []
         if data:
-            recordsTotal = data[0][7]
+            recordsTotal = data[0][6]
             dataColl.append(recordsTotal)
             for row in data:
                 objData = collections.OrderedDict()
                 objData['usuario_id'] = row[0]
-                objData['nombre'] = row[1] + ' '+row[2]
-                objData['identificacion'] = row[3]
-                objData['email'] = row[4]
-                objData['telefono'] = row[5]
-                objData['pais'] = row[6]
+                objData['nombre'] = row[1]
+                objData['identificacion'] = row[2]
+                objData['email'] = row[3]
+                objData['telefono'] = row[4]
+                objData['pais'] = row[5]
                 dataColl.append(objData)
-        return dataColl
+
+            return dataColl
+        else:
+            recordsTotal = 0
+            dataColl.append(recordsTotal)
+            return dataColl
 
 
 def agregarCapitalModule(usuario_id,capital):

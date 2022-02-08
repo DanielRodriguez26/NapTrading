@@ -392,6 +392,19 @@ def agregarCapital():
     except Exception as error:
         logger.exception(error)
 
+@app.route('/editarInversorFormulario')
+def editarInversorFormulario():
+    try:
+        if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+            
+            return render_template('crearAdministrativos.html')
+        return render_template("403.html")
+    except Exception as error:
+        logger.exception(error)
+
 # -------------------Administradores---------------------
 
 
@@ -406,6 +419,7 @@ def crearAdministrativos():
         return render_template("403.html")
     except Exception as error:
         logger.exception(error)
+
 
 
 @app.route('/crearAdministrador', methods=["GET", "POST"])

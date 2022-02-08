@@ -59,7 +59,7 @@ def indicadoresUrlModulo():
         check=data['reinvertir_ganancias']
 
 
-        fechaPullGanancia = str(fechaPull + timedelta(days=30))
+        fechaPullGanancia = str(fechaPull + timedelta(days=31))
 
         fechaPullGanancia = fechaPullGanancia.split(' ')[0]
 
