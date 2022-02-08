@@ -71,7 +71,7 @@ def finalizarPool():
                                 WHERE usuario_id = %s;''',
                                 (usuarioID,))
                 else:
-                    if row[6] > 33:
+                    if row[6] > 32:
                         cur.execute(''' UPDATE inversores 
                                     SET ganancias_mes = 0,
                                     fecha_inicio_pool = NOW(),

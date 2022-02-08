@@ -199,11 +199,9 @@ def retiroCapitalModulo():
 
 
                             monto = monto-gananciaRetiro
-                            cur.execute(
-                                "UPDATE inversores  SET inversores = %s WHERE usuario_id = %s", (retirar_capital, id,))
+                            cur.execute("UPDATE inversores  SET retirar_capital = %s WHERE usuario_id = %s", (retirar_capital, id,))
 
-                            cur.execute(
-                                "UPDATE capital  SET monto = %s , fecha = NOW() WHERE usuario_id = %s", (monto, id,))
+                            cur.execute("UPDATE capital  SET monto = %s , fecha = NOW() WHERE usuario_id = %s", (monto, id,))
 
                             cur.execute("UPDATE historicomovimientos  SET disponible = %s  WHERE historico_movimientos_id = %s", (
                                 monto, historico_movimientos_id,))
