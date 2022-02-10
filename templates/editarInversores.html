@@ -1,0 +1,133 @@
+<section class="section">
+    <input type="text" name="" id="usuario" value="{{usuario_id}}" hidden>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Editar Inversores</h5>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab"
+                            aria-controls="home" aria-selected="true">Inversor</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab"
+                            aria-controls="profile" aria-selected="false">Capital</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Nombres</label>
+                                        </div>
+                                        <div class="col-md-8 form-group">
+                                            <input type="text" class="form-control" id="nombres">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Apellidos</label>
+                                        </div>
+                                        <div class="col-md-8 form-group">
+                                            <input type="text" class="form-control" id="apellidos">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Identificacion</label>
+                                        </div>
+                                        <div class="col-md-8 form-group">
+                                            <input type="text" class="form-control" id="identificacion">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Email</label>
+                                        </div>
+                                        <div class="col-md-8 form-group">
+                                            <input type="email" class="form-control" id="email">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Telefono</label>
+                                        </div>
+                                        <div class="col-md-8 form-group">
+                                            <input type="number" class="form-control" name="contact" id="telefono">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Pais</label>
+                                        </div>
+                                        <div class="col-md-8 form-group">
+                                            <input type="text" class="form-control" id="pais">
+                                        </div>
+                                        <div class="col-sm-12 d-flex justify-content-end">
+                                            <button id="editar_inversor" class="btn btn-primary me-1 mb-1">Editar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="card-group">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Fecha</h4>
+                                        <div class="form-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label>Fecha de inicio</label>
+                                                </div>
+                                                <div class="col-md-8 form-group">
+                                                    <input type="date" id="fecha_inicio_pool" class="form-control" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Capital</h4>
+                                        <div class="form-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label>Capital</label>
+                                                </div>
+                                                <div class="col-md-8 form-group">
+                                                    <input type="text" id="capital" class="form-control" >
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label>Ganancias</label>
+                                                </div>
+                                                <div class="col-md-8 form-group">
+                                                    <input type="text" id="ganancia" class="form-control" >
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label>Porcentaje</label>
+                                                </div>
+                                                <div class="col-md-8 form-group">
+                                                    <input type="text" id="porcentaje_ganancias" class="form-control"
+                                                        >
+                                                </div>
+                                                <div class="col-sm-12 d-flex justify-content-end">
+                                                    <button id="editar_capital"
+                                                        class="btn btn-primary me-1 mb-1">Editar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../static/js/inversores/editarInversor.js"></script>
+</section>

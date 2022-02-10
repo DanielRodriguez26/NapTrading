@@ -9,9 +9,6 @@ import modules.globalvariables as gb
 import uuid
 import collections
 
-
-
-
 def crearInversorModule():
     if request.method == "POST":
         nombre = request.form['nombre']
@@ -81,10 +78,9 @@ def crearInversorModule():
 
         return objData
 
-
 def administrarInversorTablaModulo():
     if request.method == "POST":
-        buscador = request.form['buscadorFront']
+        buscador = ''
         desde = int(request.values.get('start'))
 
         mydb = ConnectDataBase()
@@ -112,7 +108,6 @@ def administrarInversorTablaModulo():
             recordsTotal = 0
             dataColl.append(recordsTotal)
             return dataColl
-
 
 def agregarCapitalModule(usuario_id,capital):
     if request.method == "POST":
@@ -180,5 +175,116 @@ def agregarCapitalModule(usuario_id,capital):
 
         return objData
 
+def editarInversorFormularioModulo():
+    if request.method == "POST":
+        usuario_id = request.form['usuario']
+        mydb = ConnectDataBase()
+        cur = mydb.cursor()
+        cur.execute('''SELECT DISTINCT iv.identificacion,
+                        iv.nombres, iv.apellidos,
+                        iv.email,iv.telefono, 
+                        iv.pais, iv.fecha_inicio_pool,
+                        gn.monto ,hs.disponible,
+                        iv.porcentaje_ganancias 
+                    FROM inversores iv
+                    INNER JOIN historicomovimientos hs on hs.usuario_id = iv.usuario_id
+                    INNER JOIN ganancias gn ON gn.usuario_id = iv.usuario_id
+                    WHERE hs.tipo_movimiento ='IC'
+                    AND iv.usuario_id = %s''', (usuario_id,))
+        data = cur.fetchall()
+        cur.close()
+        mydb.close()
+
+        
+        dataColl = []
+        if data:
+            for row in data:
+                fecha_inicio_pool = str(row[6])
+                fecha_inicio_pool = fecha_inicio_pool.split(' ')
+                objData = collections.OrderedDict()
+                objData['identificacion'] = row[0]
+                objData['nombres'] = row[1]
+                objData['apellidos'] = row[2]
+                objData['email'] = row[3]
+                objData['telefono'] = row[4]
+                objData['pais'] = row[5]
+                objData['fecha_inicio_pool'] = fecha_inicio_pool[0]
+                objData['ganancia'] = row[7]
+                objData['capital'] = row[8]
+                objData['porcentaje_ganancias'] = row[9]
+                objData['usuario_id'] = usuario_id
+            dataColl.append(objData)
+            return dataColl
+
+def actualizarInversorModulo():
+    if request.method == "POST":
+        nombres = request.form['nombres']
+        apellidos = request.form['apellidos']
+        identificacion = request.form['identificacion']
+        email = request.form['email']
+        telefono = request.form['telefono']
+        pais = request.form['pais']
+        usuario = request.form['usuario']
+
+        mydb = ConnectDataBase()
+        cur = mydb.cursor()
+
+        cur.execute(''' UPDATE inversores   
+                        SET nombres = %s , apellidos=%s,email=%s, telefono=%s, pais=%s, identificacion=%s WHERE usuario_id = %s''',
+                        (nombres,apellidos,email,telefono,pais, identificacion,usuario))
+        mydb.commit()
+        cur.close()
+        mydb.close()
+
+        objData = collections.OrderedDict()
+        objData['url'] = '/home'
+        objData['redirect'] = True
+        objData['auditNombre'] = nombres
+        objData['auditApellido'] = apellidos
+        objData['auditIdentificacion'] = identificacion
+        objData['auditEmail'] = email
+        objData['auditTelefono'] = telefono
+        return objData
 
 
+def actualizarCapitalModulo():
+    if request.method == "POST":
+        nombres = request.form['nombres']
+        apellidos = request.form['apellidos']
+        identificacion = request.form['identificacion']
+        email = request.form['email']
+        telefono = request.form['telefono']
+        pais = request.form['pais']
+        usuario = request.form['usuario']
+        capital = request.form['capital']
+        ganancia = request.form['ganancia']
+        porcentaje_ganancias = request.form['porcentaje_ganancias']
+        fecha_inicio_pool = request.form['fecha_inicio_pool']
+
+        mydb = ConnectDataBase()
+        cur = mydb.cursor()
+
+        cur.execute(''' UPDATE historicomovimientos   
+                        SET disponible=%s WHERE usuario_id = %s''',
+                        (nombres,apellidos,email,telefono,pais, identificacion,usuario))
+        mydb.commit()
+        cur.execute(''' UPDATE ganancias   
+                        SET monto=%s WHERE usuario_id = %s''',
+                        (ganancia, usuario))
+        mydb.commit()
+        cur.execute(''' UPDATE inversores   
+                        SET fecha_inicio_pool=%s, porcentaje_ganancias=%s WHERE usuario_id = %s''',
+                        (fecha_inicio_pool, porcentaje_ganancias, usuario))
+        mydb.commit()
+        cur.close()
+        mydb.close()
+
+        objData = collections.OrderedDict()
+        objData['url'] = '/home'
+        objData['redirect'] = True
+        objData['auditNombre'] = nombres
+        objData['auditApellido'] = apellidos
+        objData['auditIdentificacion'] = identificacion
+        objData['auditEmail'] = email
+        objData['auditTelefono'] = telefono
+        return objData

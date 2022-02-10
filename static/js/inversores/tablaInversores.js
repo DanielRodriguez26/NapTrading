@@ -162,13 +162,13 @@ function cargarAdministrativosTablaSuccess() {
                 let usuario_id = e.currentTarget.getAttribute('data-id');
                 cambiarContrasena(usuario_id)
             });
+
             $('.agregar-capital').click((e) => {
                 let usuario_id = e.currentTarget.getAttribute('data-id');
                 agregarCapitalModal(usuario_id)
             });
 
             $('.editar-inversor').click((e) => {
-                
                 let usuario_id = e.currentTarget.getAttribute('data-id');
                 editarInversor(usuario_id)
             });
@@ -183,6 +183,10 @@ function cargarAdministrativosTablaSuccess() {
     $('#tableInversores tbody').on('click', 'tr td  ul li span .agregar-capital', function(e) { 
         let usuario_id = e.currentTarget.getAttribute('data-id');
         agregarCapitalModal(usuario_id)
+    })
+    $('#tableInversores tbody').on('click', 'tr td  ul li span .editar-inversor', function(e) { 
+        let usuario_id = e.currentTarget.getAttribute('data-id');
+        editarInversor(usuario_id)
     })
 }
 
@@ -289,18 +293,5 @@ function agregarCapitalSuccess(responseJson) {
 }
 
 function editarInversor(usuario_id) {
-    var data = new FormData();
-    data.append('usuario' , usuario_id);
-
-    $.ajax({
-        data:data,
-        cache: false,
-        contentType: false,
-        processData: false,
-        type: 'POST',
-        url: '/editarInversorFormulario',
-        success: function (responseJson, status, statusCode) {
-            ;
-        },
-    })
+    $('#contenido').load(`editarInversorFormulario/${usuario_id}`);
 }

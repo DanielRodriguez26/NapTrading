@@ -20,7 +20,7 @@ from modules.authentication import permisosModules
 from modules.inversor.indicadores import indicadoresModule, indicadoresUrlModulo, retiroganaciasModulo, retiroCapitalModulo,reuinvertirGananciasModulo
 from modules.login import loginVerifyModule
 from modules.administrador.administrador import crearAdministradorModule, editarAdministradorModule, administrarAdministrativosTablaModulo
-from modules.inversor.inversor import crearInversorModule, administrarInversorTablaModulo, agregarCapitalModule
+from modules.inversor.inversor import crearInversorModule, administrarInversorTablaModulo, agregarCapitalModule,editarInversorFormularioModulo,actualizarInversorModulo,actualizarCapitalModulo
 from modules.historicos import historicosTablaModulo, indicadoresHistoricosModulo, descargarExcelHistoricoModulo
 from modules.cambiarContrasena import cambiarContrasenaModulo
 from modules.administrador.solicitudes import finalizarTicketModulo, finalizarTicketModuloAudit, solicitudesTablaModulo
@@ -392,19 +392,71 @@ def agregarCapital():
     except Exception as error:
         logger.exception(error)
 
-@app.route('/editarInversorFormulario')
-def editarInversorFormulario():
+@app.route('/editarInversorFormulario/<usuario_id>')
+def editarInversorFormulario(usuario_id):
     try:
         if "usuario" in session:
             validarPermiso = permisosUsuario(2)
             if validarPermiso == False:
                 return render_template("403.html")
-            
-            return render_template('crearAdministrativos.html')
+            return render_template('editarInversores.html',usuario_id=usuario_id)
         return render_template("403.html")
     except Exception as error:
         logger.exception(error)
 
+@app.route('/editarInversorConsulta', methods=["GET", "POST"])
+def editarInversorConsulta():
+    try:
+        if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+            dataColl = editarInversorFormularioModulo()
+            return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
+        return render_template("403.html")
+    except Exception as error:
+        logger.exception(error)
+
+@app.route('/actualizarInversor', methods=["GET", "POST"])
+def actualizarInversor():
+    try:
+        if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
+            dataColl = actualizarInversorModulo()
+
+            auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Se edito  la informacion del  Inversor', 'Se edito la informacion  para el inversor con los siguientes datos: Nombre ' + str(dataColl['auditNombre'])+', Apellidos '+str(
+                dataColl['auditApellido'])+', email '+str(dataColl['auditEmail'])+',  identificación: ' + str(dataColl['auditIdentificacion'])+'')
+            audit.AddAudit(auditory)
+
+
+            return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
+        return render_template("403.html")
+    except Exception as error:
+        logger.exception(error)
+
+
+@app.route('/actualizarCapital', methods=["GET", "POST"])
+def actualizarCapital():
+    try:
+        if "usuario" in session:
+            validarPermiso = permisosUsuario(2)
+            if validarPermiso == False:
+                return render_template("403.html")
+
+            dataColl = actualizarCapitalModulo()
+
+            auditory = audit.Audit(datetime.datetime.now(), str(session['usuario']), 'Se edito  la informacion del  Inversor', 'Se edito la informacion  para el inversor con los siguientes datos: Nombre ' + str(dataColl['auditNombre'])+', Apellidos '+str(
+                dataColl['auditApellido'])+', email '+str(dataColl['auditEmail'])+',  identificación: ' + str(dataColl['auditIdentificacion'])+'')
+            audit.AddAudit(auditory)
+
+
+            return Response(json.dumps({'data': dataColl}), status=200, mimetype='application/json')
+        return render_template("403.html")
+    except Exception as error:
+        logger.exception(error)
 # -------------------Administradores---------------------
 
 
