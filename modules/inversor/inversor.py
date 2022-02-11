@@ -184,19 +184,37 @@ def editarInversorFormularioModulo():
                         iv.nombres, iv.apellidos,
                         iv.email,iv.telefono, 
                         iv.pais, iv.fecha_inicio_pool,
-                        gn.monto ,hs.disponible,
+                        gn.monto ,
                         iv.porcentaje_ganancias 
                     FROM inversores iv
-                    INNER JOIN historicomovimientos hs on hs.usuario_id = iv.usuario_id
                     INNER JOIN ganancias gn ON gn.usuario_id = iv.usuario_id
-                    WHERE hs.tipo_movimiento ='IC'
                     AND iv.usuario_id = %s''', (usuario_id,))
         data = cur.fetchall()
+
+        cur.execute(''' SELECT fecha,disponible ,historico_movimientos_id
+                        FROM historicomovimientos 
+                        WHERE tipo_movimiento ='IC' 
+                        AND disponible > 0
+                        AND usuario_id = %s''', (usuario_id,))
+        capitales = cur.fetchall()
+
+
         cur.close()
         mydb.close()
 
         
         dataColl = []
+        dataCapital = []
+
+        if capitales:
+            for capital in capitales:
+                objCapital = {}
+                fecha = str(capital[0])
+                fecha = fecha.split(' ')                
+                objCapital['fecha'] = fecha[0]
+                objCapital['monto'] = capital[1]
+                objCapital['historico_id'] = capital[2]
+                dataCapital.append(objCapital)
         if data:
             for row in data:
                 fecha_inicio_pool = str(row[6])
@@ -209,12 +227,15 @@ def editarInversorFormularioModulo():
                 objData['telefono'] = row[4]
                 objData['pais'] = row[5]
                 objData['fecha_inicio_pool'] = fecha_inicio_pool[0]
-                objData['ganancia'] = row[7]
-                objData['capital'] = row[8]
-                objData['porcentaje_ganancias'] = row[9]
+                objData['ganancia'] = int(row[7])
+                objData['porcentaje_ganancias'] = row[8]
                 objData['usuario_id'] = usuario_id
-            dataColl.append(objData)
-            return dataColl
+                objData['capitales'] = dataCapital
+                
+                
+
+        dataColl.append(objData)
+        return dataColl
 
 def actualizarInversorModulo():
     if request.method == "POST":
@@ -225,13 +246,20 @@ def actualizarInversorModulo():
         telefono = request.form['telefono']
         pais = request.form['pais']
         usuario = request.form['usuario']
+        if 'porcentaje_ganancias' in request.form:
+            porcentaje_ganancias = request.form['porcentaje_ganancias']
+        
+        fecha_inicio_pool = request.form['fecha_inicio_pool']
 
         mydb = ConnectDataBase()
         cur = mydb.cursor()
 
         cur.execute(''' UPDATE inversores   
-                        SET nombres = %s , apellidos=%s,email=%s, telefono=%s, pais=%s, identificacion=%s WHERE usuario_id = %s''',
-                        (nombres,apellidos,email,telefono,pais, identificacion,usuario))
+                        SET nombres = %s , apellidos=%s,email=%s, 
+                        telefono=%s, pais=%s, identificacion=%s ,
+                        fecha_inicio_pool=%s, porcentaje_ganancias=%s
+                        WHERE usuario_id = %s''',
+                        (nombres,apellidos,email,telefono,pais, identificacion,fecha_inicio_pool,porcentaje_ganancias,usuario))
         mydb.commit()
         cur.close()
         mydb.close()
@@ -256,25 +284,36 @@ def actualizarCapitalModulo():
         telefono = request.form['telefono']
         pais = request.form['pais']
         usuario = request.form['usuario']
-        capital = request.form['capital']
-        ganancia = request.form['ganancia']
-        porcentaje_ganancias = request.form['porcentaje_ganancias']
-        fecha_inicio_pool = request.form['fecha_inicio_pool']
+        fechas = json.loads(request.form['fechas'])
+        capitales = json.loads(request.form['capital'])
 
         mydb = ConnectDataBase()
         cur = mydb.cursor()
 
-        cur.execute(''' UPDATE historicomovimientos   
-                        SET disponible=%s WHERE usuario_id = %s''',
-                        (nombres,apellidos,email,telefono,pais, identificacion,usuario))
-        mydb.commit()
-        cur.execute(''' UPDATE ganancias   
-                        SET monto=%s WHERE usuario_id = %s''',
-                        (ganancia, usuario))
-        mydb.commit()
-        cur.execute(''' UPDATE inversores   
-                        SET fecha_inicio_pool=%s, porcentaje_ganancias=%s WHERE usuario_id = %s''',
-                        (fecha_inicio_pool, porcentaje_ganancias, usuario))
+
+        if fechas is not None:            
+            for fecha in fechas:
+                fechaArr = fecha[0]
+                feccha = fechaArr['fecha']
+                cur.execute(''' UPDATE historicomovimientos   
+                            SET fecha=%s WHERE usuario_id = %s''',
+                            (feccha,fechaArr['historico_id']))
+
+        if capitales is not None:            
+            for capital in capitales:
+                capitalArr=capital[0]
+                cur.execute(''' UPDATE historicomovimientos   
+                            SET disponible=%s WHERE usuario_id = %s''',
+                            (capitalArr['monto'],capitalArr['historico_id']))
+        
+        if 'ganancia' in request.form:
+            ganancia = request.form['ganancia']
+            mydb.commit()
+            cur.execute(''' UPDATE ganancias   
+                            SET monto=%s WHERE usuario_id = %s''',
+                            (ganancia, usuario))
+
+
         mydb.commit()
         cur.close()
         mydb.close()
