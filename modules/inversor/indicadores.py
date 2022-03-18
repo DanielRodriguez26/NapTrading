@@ -34,7 +34,7 @@ def indicadoresUrlModulo():
         capital = cur.fetchone()
         capital = capital['monto']
 
-        cur.execute("SELECT SUM(h.monto) as totalInvertido, MIN(h.fecha) as fecha, DATE_ADD(MIN(h.fecha),INTERVAL 180 DAY) as fechaRetiro FROM historicomovimientos as h WHERE tipo_movimiento in ('IC') AND usuario_id = %s and disponible > 0;", (id,))
+        cur.execute("SELECT SUM(h.disponible) as totalInvertido, MIN(h.fecha) as fecha, DATE_ADD(MIN(h.fecha),INTERVAL 180 DAY) as fechaRetiro FROM historicomovimientos as h WHERE tipo_movimiento in ('IC') AND usuario_id = %s and disponible >= 0;", (id,))
         totalInvertidos = cur.fetchone()
         totalInvertido = int(totalInvertidos["totalInvertido"])
         fechaIvertida = str(totalInvertidos["fechaRetiro"])
