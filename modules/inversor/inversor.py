@@ -246,10 +246,11 @@ def actualizarInversorModulo():
         telefono = request.form['telefono']
         pais = request.form['pais']
         usuario = request.form['usuario']
-        if 'porcentaje_ganancias' in request.form:
-            porcentaje_ganancias = request.form['porcentaje_ganancias']
-        
+        porcentaje_ganancias = request.form['porcentaje_ganancias']            
         fecha_inicio_pool = request.form['fecha_inicio_pool']
+
+        if porcentaje_ganancias == '':
+            porcentaje_ganancias = None
 
         mydb = ConnectDataBase()
         cur = mydb.cursor()
