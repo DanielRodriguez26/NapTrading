@@ -161,9 +161,9 @@ def retiroCapitalModulo():
         id = session["usuario"]
         objData = collections.OrderedDict()
         emailRetiro = request.form['emailRetiro']
-        gananciaRetiro = request.form['gananciaRetiro']
+        capitalRetiro = request.form['gananciaRetiro']
         metodoRetiro = request.form['metodoRetiro']
-        gananciaRetiro =int(gananciaRetiro)
+        capitalRetiro =int(capitalRetiro)
         mydb = ConnectDataBase()
         cur = mydb.cursor()
         
@@ -175,74 +175,91 @@ def retiroCapitalModulo():
         cur.execute(''' SELECT retirar_capital FROM inversores  WHERE usuario_id = %s;''', (id,))
         retirar_capital = cur.fetchone()
         retirar_capital = retirar_capital[0]
-        if retirar_capital != 0:
+        if retirar_capital > 0:
             retirar_capital-=1
-            if monto >= gananciaRetiro:
-                cur.execute(''' SELECT fecha, monto, historico_movimientos_id FROM historicomovimientos where tipo_movimiento = 'IC' and usuario_id = %s;''', (id,))
-                fechaRetiros = cur.fetchall()
-                fechaRetiros = fechaRetiros[0]
-                montoXCapital = fechaRetiros[1]
-                historico_movimientos_id = fechaRetiros[2]
+            #Se valida si la solicitud del inversor es menor al capital que posee
+            if monto >= capitalRetiro:
+                #Se valida si han pasado 6 meses al menos en un ingreso de Capital para continuar
+                cur.execute('''select min(historico_movimientos_id), fecha, TIMESTAMPDIFF(DAY, fecha, NOW()) from historicomovimientos where TIMESTAMPDIFF(DAY, fecha, NOW()) > 180 and tipo_movimiento = 'IC' and disponible > 0 and usuario_id =%s;''', (id,))
+                diasFaltantes = cur.fetchone()
 
-                for fechaRetiro in fechaRetiros:
-                    fechaRetiro = str(fechaRetiro)
-                    cur.execute(
-                        '''SELECT TIMESTAMPDIFF(DAY, %s, NOW()) AS dias_transcurridos;''', (fechaRetiro,))
-                    diasTotal = cur.fetchone()
+                if diasFaltantes[0]:
+                    # Se busca en los historicos del inversor cuanto disponible tienen ingresos de capital que superen 180 días
+                    cur.execute(''' select sum(disponible) from historicomovimientos where TIMESTAMPDIFF(DAY, fecha, NOW()) > 180 and tipo_movimiento = 'IC' and usuario_id = %s;''', (id,))
+                    totalDisponible = cur.fetchone()
 
-                    diasFaltantes = 180 - diasTotal[0]
-                    if diasTotal[0] > 180:
-                        if montoXCapital >= gananciaRetiro:
-                            
-                            fecha=datetime.now()
-                            fechaEntrega= str(fecha + timedelta(days=3))
+                    if totalDisponible[0]> capitalRetiro:
 
+                        cur.execute(''' select historico_movimientos_id, disponible from historicomovimientos where TIMESTAMPDIFF(DAY, fecha, NOW()) > 180 and tipo_movimiento = 'IC' and disponible > 0 and usuario_id =%s;''', (id,))
+                        ICmovimientos = cur.fetchall()
 
-                            monto = monto-gananciaRetiro
-                            cur.execute("UPDATE inversores  SET retirar_capital = %s WHERE usuario_id = %s", (retirar_capital, id,))
+                        capitalRetiroDesc = capitalRetiro
 
-                            cur.execute("UPDATE capital  SET monto = %s , fecha = NOW() WHERE usuario_id = %s", (monto, id,))
+                        for ICmovimiento in ICmovimientos:
+                            # Se valida en cada iteración que haya capital, cada ciclo va a ir restando y actualizando los disponibles de los historicos hasta que quede en 0 
+                            if capitalRetiroDesc > 0:
 
-                            cur.execute("UPDATE historicomovimientos  SET disponible = %s  WHERE historico_movimientos_id = %s", (
-                                monto, historico_movimientos_id,))
+                                ingresoCapitalID =  ICmovimiento[0]
+                                disponibleIC = ICmovimiento[1]
 
-                            cur.execute('''INSERT INTO historicomovimientos 
-                                            (usuario_id, tipo_movimiento, monto, estado,metodo_desembolso,email_solicitud,fecha,fecha_limite_solicitud) 
-                                            VALUES (%s, 'RC', %s, '1' ,%s,%s,NOW(),%s)''', (id, gananciaRetiro, metodoRetiro, emailRetiro,fechaEntrega))
-                            mydb.commit()
-                            cur.close()
-                            mydb.close()
+                                if disponibleIC <= capitalRetiroDesc:
+                                    capitalRetiroDesc = capitalRetiroDesc - disponibleIC
+                                    disponibleIC = 0
+                                
+                                else:
+                                    disponibleIC = disponibleIC - capitalRetiroDesc
+                                    capitalRetiroDesc = 0
 
-                            objData['mensaje'] = 'En maximo 3 días se dara respuesta a tu retiro'
-                            objData['url'] = '/home'
-                            objData['redirect'] = True
+                                cur.execute("UPDATE historicomovimientos  SET disponible = %s  WHERE historico_movimientos_id = %s", (
+                                    disponibleIC, ingresoCapitalID,))
+                            else: 
+                                break
 
-                            return objData
-                        else:                            
-                            objData['mensaje'] = 'La cantidad de retiro excede el monto que tiene actualmente'
-                            objData['redirect'] = False
-                            cur.close()
-                            mydb.close()
-                            return objData
+                        cur.execute("UPDATE inversores  SET retirar_capital = %s WHERE usuario_id = %s", (retirar_capital, id,))
+                        monto = monto - capitalRetiro  
+
+                        fecha=datetime.now()
+                        fechaEntrega= str(fecha + timedelta(days=3))
+
+                        cur.execute("UPDATE capital  SET monto = %s , fecha = NOW() WHERE usuario_id = %s", (monto, id,))
+                        cur.execute('''INSERT INTO historicomovimientos 
+                                        (usuario_id, tipo_movimiento, monto, estado,metodo_desembolso,email_solicitud,fecha,fecha_limite_solicitud) 
+                                        VALUES (%s, 'RC', %s, '1' ,%s,%s,NOW(),%s)''', (id, capitalRetiro, metodoRetiro, emailRetiro,fechaEntrega))
+                        mydb.commit()
+                        cur.close()
+                        mydb.close()
+
+                        objData['mensaje'] = 'En maximo 3 días se dara respuesta a su retiro'
+                        objData['url'] = '/home'
+                        objData['redirect'] = True
+                        return objData                            
+                                
                     else:
-                        diasFaltantes=str(diasFaltantes)
-                        objData['mensaje'] = f'Actualmente no es posible hacer un retiro su capital, ya que hace falta {diasFaltantes} días '
+                        totalDisponible=str(totalDisponible[0])
+                        objData['mensaje'] = 'La cantidad de retiro excede el monto que actualmente puede retirar, el capital debe estar un minimo de 6 meses para poder ser retirado, actualmente puede retirar $'+ totalDisponible
                         objData['redirect'] = False
                         cur.close()
                         mydb.close()
                         return objData
+                else:
+                    diasFaltantes=str(diasFaltantes)
+                    objData['mensaje'] = f'Actualmente no es posible hacer un retiro su capital'
+                    objData['redirect'] = False
+                    cur.close()
+                    mydb.close()
+                    return objData
             else: 
                 
-                objData['mensaje'] = 'La cantidad de retio excede el monto que tiene actualmente'
+                objData['mensaje'] = 'La cantidad de retiro excede el monto que tiene actualmente'
                 objData['redirect'] = False
                 cur.close()
                 mydb.close()
                 return objData
-        else: 
-                mydb.close()
+        else:                 
                 objData['mensaje'] = 'Ya excediste la cantidad de retiros de este mes'
                 objData['redirect'] = False
                 cur.close()
+                mydb.close()
                 return objData
 
 
