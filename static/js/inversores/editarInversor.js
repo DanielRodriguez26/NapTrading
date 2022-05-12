@@ -135,7 +135,7 @@ function actualizarInversorSuccess(responseJson) {
         Swal.fire({
             icon: "success",
             title: "Bien Hecho",
-            text: `Se a actualizado corretamente los datos del inversor`,
+            text: `Se han actualizado correctamente los datos del inversor`,
         }).then((result) => {
             sessionStorage.clear();
         });

@@ -246,10 +246,11 @@ def actualizarInversorModulo():
         telefono = request.form['telefono']
         pais = request.form['pais']
         usuario = request.form['usuario']
-        if 'porcentaje_ganancias' in request.form:
-            porcentaje_ganancias = request.form['porcentaje_ganancias']
-        
+        porcentaje_ganancias = request.form['porcentaje_ganancias']            
         fecha_inicio_pool = request.form['fecha_inicio_pool']
+
+        if porcentaje_ganancias == '':
+            porcentaje_ganancias = None
 
         mydb = ConnectDataBase()
         cur = mydb.cursor()
@@ -296,14 +297,14 @@ def actualizarCapitalModulo():
                 fechaArr = fecha[0]
                 feccha = fechaArr['fecha']
                 cur.execute(''' UPDATE historicomovimientos   
-                            SET fecha=%s WHERE usuario_id = %s''',
+                            SET fecha=%s WHERE historico_movimientos_id = %s''',
                             (feccha,fechaArr['historico_id']))
 
         if capitales is not None:            
             for capital in capitales:
                 capitalArr=capital[0]
                 cur.execute(''' UPDATE historicomovimientos   
-                            SET disponible=%s WHERE usuario_id = %s''',
+                            SET disponible=%s WHERE historico_movimientos_id = %s''',
                             (capitalArr['monto'],capitalArr['historico_id']))
         
         if 'ganancia' in request.form:
