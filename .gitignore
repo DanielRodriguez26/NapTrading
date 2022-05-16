@@ -129,3 +129,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 modules/globalvariables.py
+NapTrading.zip
