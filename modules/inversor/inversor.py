@@ -80,7 +80,7 @@ def crearInversorModule():
 
 def administrarInversorTablaModulo():
     if request.method == "POST":
-        buscador = ''
+        buscador = request.values.get('buscadorFront')
         desde = int(request.values.get('start'))
 
         mydb = ConnectDataBase()

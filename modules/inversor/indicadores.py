@@ -118,6 +118,7 @@ def retiroganaciasModulo():
         diasTotal = cur.fetchone()
 
         diasTotal = diasTotal[0]
+        diasFaltantes = 30 - diasTotal
         if diasTotal > 30:
             if monto >= gananciaRetiro:
                 monto = monto-gananciaRetiro
@@ -147,14 +148,7 @@ def retiroganaciasModulo():
                 mydb.close()
                 return objData
         else:
-            cur.execute(
-            '''SELECT CONCAT(
-                    FLOOR(HOUR(TIMEDIFF(%s, NOW())) / 24), ' días ',
-                    MOD(HOUR(TIMEDIFF(%s, NOW())), 24), ' horas ',
-                    MINUTE(TIMEDIFF(%s, NOW())), ' minutos ') AS DESCRIPTION;''', (fecha_inicio_pool,fecha_inicio_pool,fecha_inicio_pool))
-            diasFaltantes = cur.fetchone()
-            diasFaltantes = diasFaltantes[0]
-            objData['mensaje'] = f'Actualmente no es posible hacer un retiro de sus ganancias ya que hace falta {diasFaltantes} '
+            objData['mensaje'] = f'Actualmente no es posible hacer un retiro sus ganancias ya que hace falta {diasFaltantes} días '
             objData['redirect'] = False
             cur.close()
             mydb.close()
@@ -248,20 +242,8 @@ def retiroCapitalModulo():
                         mydb.close()
                         return objData
                 else:
-                    cur.execute(
-                         '''select min(historico_movimientos_id), fecha from historicomovimientos where tipo_movimiento = 'IC' and disponible > 0 and usuario_id =%s''', (id,))
-                    fechaRetiroCapital = cur.fetchone()
-                    fechaRetiroCapital = fechaRetiroCapital[1]
-
-                    cur.execute(
-                    '''SELECT CONCAT(
-                            FLOOR(HOUR(TIMEDIFF(%s, NOW())) / 24), ' días ',
-                            MOD(HOUR(TIMEDIFF(%s, NOW())), 24), ' horas ',
-                            MINUTE(TIMEDIFF(%s, NOW())), ' minutos ') AS DESCRIPTION;''', (fechaRetiroCapital,fechaRetiroCapital,fechaRetiroCapital))
-                    diasFaltantes = cur.fetchone()
-                    diasFaltantes = diasFaltantes[0]
-
-                    objData['mensaje'] = f'Actualmente no es posible hacer un retiro su capital ya que hace falta {diasFaltantes}'
+                    diasFaltantes=str(diasFaltantes)
+                    objData['mensaje'] = f'Actualmente no es posible hacer un retiro su capital'
                     objData['redirect'] = False
                     cur.close()
                     mydb.close()
